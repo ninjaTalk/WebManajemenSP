@@ -18,7 +18,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $data = Employee::where("isUser", "=", "0")->paginate(6);
+        $data = Employee::where("isAdmin", "=", "0")->paginate(6);
         //dd($data);
         return view('Admin.ManageUser.ManageEmployee.ShowEmployee', ['data'=>$data]);
     }
@@ -53,7 +53,7 @@ class EmployeeController extends Controller
             try {
                 Employee::create([
                     'name' => $request->name,
-                    'isUser' => "0",
+                    'isAdmin' => "0",
                     'password' => $request->password,
                     'gender' => $request->radioGender,
                     'kodeCollector' => $request->kodeCollector
@@ -102,7 +102,7 @@ class EmployeeController extends Controller
         $this->validate($request, [
             'name'=> 'string|required|max:50',
             'radioGender' => 'required',
-            'password' => 'string|required|max:8'
+            'password' => 'string|required|min:8|max:8'
         ]);
         $data = DB::table('employees')->where("idPegawai", $employee);
         try {

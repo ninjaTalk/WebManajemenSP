@@ -7,7 +7,8 @@
             <div class="container-fluid">
                 <div class="panel">
                     <div class="panel-heading">
-                        <h3>Data Pinjaman</h3>
+                        <h3><strong>Data Pinjaman</strong></h3>
+                        <h5 style="margin-top: -5px;margin-left: 10px">Menampilkan Data Pinjaman Nasabah yang sedang BERJALAN ataupun LUNAS</h5>
                     </div>
                     <div class="panel-body">
                         @if(session()->has('success'))
@@ -26,16 +27,18 @@
                         <div class="card-body">
                             <ul class="list-group pagination">
                                 <table id="coba"
-                                       class="table table-striped table-bordered">
-                                    <thead class="col-mid-8">
-                                    <tr>
-                                        <th>PP Nomor</th>
+                                       class="table table-striped table-bordered" style="font-size: 14px;">
+                                    <thead class="col-mid-8" >
+                                    <tr >
+                                        <th >PP Nomor</th>
                                         <th>Name</th>
                                         <th>No KTP</th>
-                                        <th>Tanggal Pinjam</th>
+                                        <th class="col-md-1">Tanggal Pinjam</th>
                                         <th>Saldo</th>
                                         <th>Pokok Pinjaman</th>
                                         <th>Jenis Bunga</th>
+                                        <th class="col-md-1">Persentase Bunga</th>
+                                        <th class="col-md-1">Jumlah Angsuran</th>
                                         <th>Jaminan</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -51,6 +54,14 @@
                                             <th>Rp. {{$datas->saldoPinjaman}}</th>
                                             <th>Rp. {{$datas->pokokPinjaman}}</th>
                                             <th>{{$datas->loanType}}</th>
+                                            <th>
+                                                @if($datas->bunga == 0.02)
+                                                    2%
+                                                @else
+                                                    3%
+                                                @endif
+                                            </th>
+                                            <th>{{$datas->jmlAngsur}} Kali</th>
                                             <th>{{$datas->jaminan}}</th>
                                             <th>{{$datas->status}}</th>
                                             <th>
@@ -69,6 +80,9 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if(count($data)>6)
+                                    {{$data->Links()}}
+                                @endif
                             </ul>
                         </div>
                     </div>

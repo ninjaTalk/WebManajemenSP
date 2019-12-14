@@ -39,45 +39,50 @@
                 <img src="{{asset('admin/assets/img/logo.png')}}" style="background: #f8f8f8" width="60" height="60" alt="Logo Koperasi" >
                 <strong>KOPERASI CATUR SARI CAHAYA</strong>
             </a>
+            <!-- Right Side Of Navbar -->
         </div>
+
         <div class="container-fluid">
             <div class="navbar-btn">
                 <button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
             </div>
             <div class="navbar-btn navbar-btn-right">
-                <a class="btn btn-success update-pro"
-                   title="Upgrade to Pro" target="_blank">
+                <label style="padding-right: 20px">{{\Illuminate\Support\Facades\Session::get('name')}}</label>
+                <a href="{{ route('logout') }}" class="btn btn-success update-pro"
+                   title="Upgrade to Pro" target="_blank"
+                   onclick="event.preventDefault();
+                   if (window.confirm('Apakah anda yakin ingin keluar (logout) dari sistem ?')){
+                       document.getElementById('logout-form').submit();
+                   }">
                     <i class="fa fa-rocket"></i> <span>Logout</span></a>
-            </div>
-            <div id="navbar-menu">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img
-                                src="{{asset('admin/assets/img/user.png')}}" class="img-circle" alt="Avatar">
-                            <span>Samuel</span></a>
-                    </li>
-                </ul>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
             </div>
         </div>
     </nav>
+{{--    </nav>--}}
     <!-- END NAVBAR -->
     <!-- LEFT SIDEBAR -->
     <div id="sidebar-nav" class="sidebar">
         <div class="sidebar-scroll">
             <nav>
                 <ul class="nav">
-                    <li><a href="/" class="active"><i class="lnr lnr-home"></i> <span>Home</span></a></li>
-                    <li><a href="/ManageUser" class=""><i class="lnr lnr-code"></i> <span>Manage User</span></a></li>
+                    <li><a href="/" class="active"><i class="lnr lnr-home"></i> <span>Beranda</span></a></li>
+                    <li><a href="/ManageUser" class=""><i class="lnr lnr-users"></i> <span>Kelola Pengguna</span></a></li>
                     <li><a href="/saving" class=""><i class="lnr lnr-chart-bars"></i> <span>Simpanan</span></a></li>
-                    <li><a href="/loan" class=""><i class="lnr lnr-cog"></i> <span>Pinjaman</span></a></li>
-                    <li><a href="/menuReport" class=""><i class="lnr lnr-alarm"></i> <span>Print Report</span></a></li>
+                    <li><a href="/loan" class=""><i class="lnr lnr-book"></i> <span>Pinjaman</span></a></li>
+                    <li><a href="/menuReport" class=""><i class="lnr lnr-printer"></i> <span>Cetak Laporan</span></a></li>
+                    <li><a href="/search" class=""><i class="lnr lnr-cloud-check"></i> <span>Pencarian</span></a></li>
                 </ul>
             </nav>
         </div>
     </div>
     <!-- END LEFT SIDEBAR -->
     <!-- MAIN -->
-    @yield('content')
+    <main class="py-4">
+        @yield('content')
+    </main>
 
 <!-- END MAIN -->
     <div class="clearfix"></div>

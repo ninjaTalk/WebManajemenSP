@@ -8,7 +8,8 @@
             <div class="container-fluid">
                 <div class="panel">
                     <div class="panel-heading">
-                        <h2>Data Nasabah</h2>
+                        <h3><strong>Data Nasabah</strong></h3>
+                        <h5 style="margin-top: -5px;margin-left: 10px">Menampilkan Data Nasabah, beserta fungsi - fungsi pengelolaan user Nasabah</h5>
                     </div>
                     <div class="panel-body">
                         @if(session()->has('success'))
@@ -64,7 +65,9 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                                {{$data->Links()}}
+                                @if(count($data)>6)
+                                    {{$data->Links()}}
+                                @endif
                             </ul>
                         </div>
                     </div>

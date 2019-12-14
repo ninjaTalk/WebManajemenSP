@@ -2,11 +2,14 @@
 
 namespace App;
 
+use App\Saving;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 class Customer extends Model
 {
+    use SoftDeletes;
     protected $table = 'customers';
     protected $fillable = ['name', 'noKtp', 'gender', 'alamat', 'password',
         'idPegawai', 'kodeCollector', 'ppNomor', 'kodeTabungan'];
@@ -20,5 +23,7 @@ class Customer extends Model
             $code = $countDataonTable->idNasabah + 1;
             $item->idNasabah = $code;
         });
+
     }
+
 }

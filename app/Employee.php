@@ -2,12 +2,17 @@
 
 namespace App;
 
+use App\Http\Middleware\Authenticate;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Employee extends Model
 {
-    protected $fillable = ['name','isUser','password', 'gender', 'kodeCollector'];
+    protected $fillable = ['idPegawai','name','isAdmin','password', 'gender', 'kodeCollector'];
     public $incrementing = false;
+    protected $guard = 'admin';
     protected $table = 'employees';
     public static function boot()
     {
@@ -18,5 +23,13 @@ class Employee extends Model
             $code .= str_pad($countDataonTable, 4, 0, STR_PAD_LEFT );
             $item->idPegawai = $code;
         });
+    }
+    public function getAuthIdentifier()
+    {
+       Return $this->getKey();
+    }
+    public function getAuthPassword()
+    {
+        return $this->password;
     }
 }

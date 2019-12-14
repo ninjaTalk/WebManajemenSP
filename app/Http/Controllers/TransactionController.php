@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Employee;
 use App\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -14,8 +16,13 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
+        //dd(Auth::user());
+        //dd(\session()->get());
+//        dd(Auth::guard('admin')->user());
+        //dd(Session::get('name'));
         $data = DB::table('transactions')
             ->join('customers','transactions.idNasabah',
             '=', 'customers.idNasabah')

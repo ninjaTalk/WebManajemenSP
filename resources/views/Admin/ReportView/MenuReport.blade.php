@@ -2,17 +2,37 @@
 @section('title', 'Data Anggoata')
 
 @section('content')
-
-    <div class="main">
-        <div class="main-content">
+    <style> #menuReport
+        {
+            height:150px;
+            margin-right:50px;
+            font-size: 24px;
+            /*background-color:white ;*/
+            /*border-color: #3c3c3c;*/
+            color: white;
+        }
+    </style>
+    <div class="main ">
+        <div class="main-content" >
             <div class="container-fluid">
-                <div class="panel">
-                    <div class="panel-body">
-                        <a href="/RTransaction" class="btn btn-info">Laporan Transaction</a>
-                        <a href="/RSavings" class="btn btn-info">Laporan Simpanan</a>
-                        <a href="/RLoans" class="btn btn-info">Laporan Pinjaman</a>
+                <a id="menuReport" href="/RTransaction" class="btn btn-warning col-md-3 mr-3">
+                    <div style="padding-top: 50px;">
+                        <strong>Laporan Transaksi</strong>
+                        <i class="lnr lnr-text-align-justify"></i>
                     </div>
-                </div>
+                </a>
+                <a id="menuReport" style="color: white"  href="/RSavings" class="btn btn-info col-md-3 mr-3">
+                    <div style="padding-top: 50px;">
+                        <strong>Laporan Simpanan</strong>
+                        <i class="lnr lnr-chart-bars"></i>
+                    </div>
+                </a>
+                <a id="menuReport"  href="/RLoans" class="btn btn-success col-md-3 mr-3">
+                    <div style="padding-top: 50px;">
+                        <strong>Laporan Pinjaman</strong>
+                        <i class="lnr lnr-book"></i>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

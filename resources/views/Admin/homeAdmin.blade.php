@@ -1,6 +1,11 @@
 @extends('layouts/master')
 @section('title', 'Data Transaksi')
 @section('content')
+    @if (session('status'))
+        <div class="alert alert-success" role="alert">
+            {{ session('status') }}
+        </div>
+    @endif
     <div class="main">
         <div class="main-content">
             <div class="container-fluid">
@@ -57,7 +62,6 @@
                                             <th>{{$datas->tglInput}}</th>
                                             <th>{{$datas->kodeTabungan}}</th>
                                             <th>{{$datas->ppNomor}}</th>
-{{--                                            <th>{{$datas->idNasabah}}</th>--}}
                                             <th>{{$datas->name}}</th>
                                             <th>{{$datas->transactionType}}</th>
                                             <th>Rp.{{$datas->debit}}</th>

@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Costumer;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Saving extends Model
 {
+    use  SoftDeletes;
     protected $fillable =['kodeTabungan', 'name'];
-    public function customer(){
-        return $this->belongsTo(Customer::class);
-    }
+    protected $dates = ['deleted_at'];
 }

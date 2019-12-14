@@ -11,35 +11,52 @@
 |
 */
 
-Route::get('/', 'AuthController@index');
-Route::get('/home', 'TransactionController@index');
-Route::get('/selective', 'TransactionController@getSelectiveDate');
-Route::resource('transaction', 'TransactionController');
+Route::get('/', 'Auth\LoginController@showAdminLoginForm')->name('formLogin');
+Route::post('/login/admin', 'Auth\LoginController@adminLogin');
+
+Route::group( ['middleware' => 'auth' ], function()
+{
+    //Transaction
+    Route::get('/selective', 'TransactionController@getSelectiveDate');
+    Route::get('/home', 'TransactionController@index');
+    Route::resource('transaction', 'TransactionController');
+    Route::get('/search', 'AdminController@showSearch');
+    Route::get('/getSearch', 'AdminController@fitlerSearch');
+    //Manage User, Loan, Saving, & Transaction
+    Route::get('/ManageUser', 'HomeController@manageUser');
+    Route::resource('employee','EmployeeController');
+    Route::resource('admins','AdminController');
+    Route::resource('customer', 'CustomerController');
+    Route::resource('saving', 'SavingController');
+    Route::resource('loan', 'LoanController');
+    Route::get('/lunas', 'LoanController@indexLunas');
+
+    //Report Route
+    Route::get('/menuReport', 'ReportController@menuShow');
+
+    //transaction Report
+    Route::get('/RTransaction', 'ReportController@indexTransaction');
+    Route::get('/selectiveReport', 'ReportController@getSelectiveDate');
+    Route::get('/PTransaction', 'ReportController@printTransaction');
+
+    //saving Report
+    Route::get('/RSavings', 'ReportController@indexSaving');
+    Route::get('/selectiveCollect', 'ReportController@fitlerCollect');
+    Route::get('/PSavings', 'ReportController@printSavings');
+
+    //loan Report
+    Route::get('/RLoans', 'ReportController@indexLoan');
+    Route::get('/PLoan', 'ReportController@printLoan');
+
+    Route::get('/logout', 'Auth\LoginController@logout');
+});
+
 
 Auth::routes();
 
-//Manage User, Loan, Saving, & Transaction
-Route::get('/ManageUser', 'HomeController@manageUser');
-Route::resource('employee','EmployeeController');
-Route::resource('admins','AdminController');
-Route::resource('customer', 'CustomerController');
-Route::resource('saving', 'SavingController');
-Route::resource('loan', 'LoanController');
-Route::get('/lunas', 'LoanController@indexLunas');
 
-//Report Route
-Route::get('/menuReport', 'ReportController@menuShow');
+//tes Auth
 
-//transaction Report
-Route::get('/RTransaction', 'ReportController@indexTransaction');
-Route::get('/selectiveReport', 'ReportController@getSelectiveDate');
-Route::get('/PTransaction', 'ReportController@printTransaction');
 
-//saving Report
-Route::get('/RSavings', 'ReportController@indexSaving');
-Route::get('/selectiveCollect', 'ReportController@fitlerCollect');
-Route::get('/PSavings', 'ReportController@printSavings');
+//Route::view('/home', 'home')->middleware('auth');
 
-//loan Report
-Route::get('/RLoans', 'ReportController@indexLoan');
-Route::get('/PLoan', 'ReportController@printLoan');

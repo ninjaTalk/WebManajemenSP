@@ -15,7 +15,7 @@
                                     <label>Nama</label>
                                     <input type="text" class="form-control
                                         @error('name') is-invalid @enderror" autofocus
-                                           placeholder="Masukkan nama pegawai" name="name">
+                                           placeholder="Masukkan nama pegawai" name="name" value="{{old('name')}}">
                                     @error('name')
                                     <div class="alert alert-danger">{{$message}}</div>
                                     @enderror

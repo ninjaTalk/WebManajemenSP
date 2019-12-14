@@ -18,6 +18,7 @@ class SavingController extends Controller
     {
         $data = DB::table('customers')->join('savings','savings.kodeTabungan', '=', 'customers.kodeTabungan')
             ->join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
+            ->where('customers.deleted_at', '=', null)
             ->select('employees.name as namePegawai', 'customers.name', 'customers.noKtp',
                 'savings.kodeTabungan', 'savings.saldo', 'savings.tglLastInput')->get();
         return view('Admin.ManageSaving.homeSaving', compact('data'));

@@ -6,6 +6,7 @@ use App\Customer;
 use App\Employee;
 use App\Saving;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
@@ -19,7 +20,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
+
         $data = DB::table('customers') ->join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
+            ->where('customers.deleted_at','=', null)
             ->select('employees.name as namePegawai', 'customers.name', 'customers.noKtp',
                 'customers.gender', 'customers.alamat', 'customers.idNasabah', 'customers.kodeCollector')->paginate(6);
         return view("Admin.ManageUser.ManageCustomer.ShowCustomer", compact('data'));
@@ -32,7 +35,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        $data = Employee::all()->where("isUser", "=", "0");
+        $data = Employee::all()->where("isAdmin", "=", "0");
         return view('Admin.ManageUser.ManageCustomer.AddCustomer', compact('data'));
     }
 
@@ -44,7 +47,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+//        try {
             $this->validate($request, [
                 'name' => 'required|max:50',
                 'noKtp' => 'required|unique:customers|min:16',
@@ -60,10 +63,10 @@ class CustomerController extends Controller
             $lastUser = DB::table('customers')->orderBy('created_at', 'desc')->first();
             $lastID = $lastUser->idNasabah;
             $incrementID = $lastID + 1;
-            //dd($incrementID);
-            //dd($request->idPegawai, $users->kodeCollector);
-            $kodeTabungan = "$incrementID" . "$users->kodeCollector";
-
+            $kodeTabungan = "$users->kodeCollector"."$incrementID";
+            Saving::create([
+                'kodeTabungan' => $kodeTabungan,
+            ]);
             Customer::create([
                 'name' => $request->name,
                 'noKtp' => $request->noKtp,
@@ -75,16 +78,15 @@ class CustomerController extends Controller
                 'kodeTabungan' => "$kodeTabungan",
                 'ppNomor' => "-",
             ]);
-            Saving::create([
-                'kodeTabungan' => $kodeTabungan,
-                'name' => $request->name,
-            ]);
+            $getID = DB::table('customers')->orderBy('created_at', 'desc')->first();
+            $setID = DB::table('savings')->where('kodeTabungan', '=', $kodeTabungan);
+            $setID->update(['idNasabah'=>$getID->idNasabah]);
             $this->makeQR($incrementID, $request->noKtp);
             move_uploaded_file("qr_$incrementID.png", "QR_Image");
             Session::flash('success', 'Penambahan data berhasil');
-        }catch (\Exception $e){
-            Session::flash('error', 'Penambahan Data GAGAL karena Nomer KTP sudah pernah tersimpan di dabatase');
-        }
+//        }catch (\Exception $e){
+//            Session::flash('error', 'Penambahan Data GAGAL karena Nomer KTP sudah pernah tersimpan di dabatase');
+//        }
         return redirect()->intended('/customer');
     }
     public function makeQR($id, $noKtp){
@@ -150,10 +152,17 @@ class CustomerController extends Controller
 
     public function destroy($customer)
     {
-        //dd($customer);
         try {
+            $dataUser =  DB::table('customers')->where('idNasabah', '=', $customer);
+            $dataUser->update(['deleted_at'=> Carbon::now()]);
+            $userGet = DB::table('customers')->where('idNasabah', '=', $customer)->first();
+            $dataSaving = DB::table('savings')->where('kodeTabungan', '=', $userGet->kodeTabungan);
+            $dataSaving->update(['deleted_at'=>Carbon::now()]);
+            if (($userGet->ppNomor!=null)||($userGet->ppNomor!='-')){
+                $dataLoan = DB::table('loans')->where('ppNomor', '=', $userGet->ppNomor);
+                $dataLoan->update(['deleted_at'=>Carbon::now()]);
+            }
             Session::flash('success', 'Penghapusan data berhasil');
-            DB::delete("DELETE FROM customers WHERE idNasabah = '$customer'");
         }catch (\Exception $e){
             Session::flash('success', $e);
         }

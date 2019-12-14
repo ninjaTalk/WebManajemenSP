@@ -6,14 +6,13 @@
         <div class="main-content">
             <div class="container-fluid">
                 <div class="panel">
-                    <div class="panel-heading">
-                        <h3> Data Simpanan</h3>
-                    </div>
                     <div class="panel-body">
+                        <h3><strong>Data Simpanan</strong></h3>
+                        <h5 style="margin-top: -5px;margin-left: 10px">Menampilkan Data Simpanan seluruh Nasabah</h5>
                         <div class="card-body">
                             <ul class="list-group pagination col-md-10">
                                 <table id="coba"
-                                       class="table table-striped table-bordered">
+                                       class="table table-striped table-bordered mt-0">
                                     <thead class="col-mid-8">
                                     <tr>
                                         <th>Kode Tabungan</th>
@@ -37,6 +36,9 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if(count($data)>6)
+                                    {{$data->Links()}}
+                                @endif
                             </ul>
                         </div>
                     </div>

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 class AuthController extends Controller
 {
     public function index(){
-        return view('LoginForm.login');
+        return view('auth.login');
     }
     public function postLogin(Request $request){
         $this->validate($request,[

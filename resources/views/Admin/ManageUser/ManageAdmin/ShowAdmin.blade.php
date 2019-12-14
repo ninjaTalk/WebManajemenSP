@@ -6,7 +6,8 @@
             <div class="container-fluid">
                 <div class="panel">
                     <div class="panel-heading">
-                        <h2>Data Admin</h2>
+                        <h3><strong>Data Admin</strong></h3>
+                        <h5 style="margin-top: -5px;margin-left: 10px">Menampilkan Data Admin, beserta fungsi - fungsi pengelolaan user Admin</h5>
                     </div>
                     <div class="panel-body">
                         @if(session()->has('success'))
@@ -55,6 +56,9 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if(count($data)>6)
+                                    {{$data->Links()}}
+                                @endif
                             </ul>
                         </div>
                     </div>

@@ -146,8 +146,8 @@ class LoanController extends Controller
     public function destroy($loan)
     {
         $data = Loan::find($loan);
+        dd($data);
         $getPP = DB::table('loans')->where('id', '=',$loan)->first();
-        //return $data;
         $dataUser = $getPP->ppNomor;
         $data->update([
             'ppNomor'=>'-'
