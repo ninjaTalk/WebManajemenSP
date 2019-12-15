@@ -63,6 +63,8 @@ class CustomerController extends Controller
             $lastUser = DB::table('customers')->orderBy('created_at', 'desc')->first();
             $lastID = $lastUser->idNasabah;
             $incrementID = $lastID + 1;
+            $qr = "qr_$incrementID.png";
+            //dd($qr);
             $kodeTabungan = "$users->kodeCollector"."$incrementID";
             Saving::create([
                 'kodeTabungan' => $kodeTabungan,
@@ -77,12 +79,16 @@ class CustomerController extends Controller
                 'kodeCollector' => $users->kodeCollector,
                 'kodeTabungan' => "$kodeTabungan",
                 'ppNomor' => "-",
+                'qrcode'=> $qr
             ]);
             $getID = DB::table('customers')->orderBy('created_at', 'desc')->first();
             $setID = DB::table('savings')->where('kodeTabungan', '=', $kodeTabungan);
-            $setID->update(['idNasabah'=>$getID->idNasabah]);
             $this->makeQR($incrementID, $request->noKtp);
             move_uploaded_file("qr_$incrementID.png", "QR_Image");
+
+            $setID->update([
+                'idNasabah'=>$getID->idNasabah,
+                ]);
             Session::flash('success', 'Penambahan data berhasil');
 //        }catch (\Exception $e){
 //            Session::flash('error', 'Penambahan Data GAGAL karena Nomer KTP sudah pernah tersimpan di dabatase');
@@ -154,7 +160,10 @@ class CustomerController extends Controller
     {
         try {
             $dataUser =  DB::table('customers')->where('idNasabah', '=', $customer);
-            $dataUser->update(['deleted_at'=> Carbon::now()]);
+            $dataUser->update([
+                'deleted_at'=> Carbon::now(),
+                'noKtp' =>null
+                ]);
             $userGet = DB::table('customers')->where('idNasabah', '=', $customer)->first();
             $dataSaving = DB::table('savings')->where('kodeTabungan', '=', $userGet->kodeTabungan);
             $dataSaving->update(['deleted_at'=>Carbon::now()]);
@@ -162,6 +171,7 @@ class CustomerController extends Controller
                 $dataLoan = DB::table('loans')->where('ppNomor', '=', $userGet->ppNomor);
                 $dataLoan->update(['deleted_at'=>Carbon::now()]);
             }
+           // $dataUser->delete();
             Session::flash('success', 'Penghapusan data berhasil');
         }catch (\Exception $e){
             Session::flash('success', $e);

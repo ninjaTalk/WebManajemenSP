@@ -52,7 +52,7 @@
                                         <th>Jenis Transaksi</th>
                                         <th>Debit</th>
                                         <th>Debt</th>
-                                        <th >View</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -67,17 +67,7 @@
                                             <th>Rp.{{$datas->debit}}</th>
                                             <th>Rp.{{$datas->debt}}</th>
                                             <th>
-                                                <a class="btn btn-primary" href="{{route('transaction.edit', $datas->id)}}">Edit</a>
-                                                <a class="btn btn-danger" href="#" onclick="
-                                                    if (window.confirm('Apakah anda yakin ingin menghapus data ini ? ')){
-                                                    $('#formDelete{{$datas->kodeTransaksi}}').submit()
-                                                    }
-                                                    ">delete</a>
-                                                <form action="{{route('transaction.destroy', $datas->kodeTransaksi)}}"
-                                                      id="formDelete{{$datas->kodeTransaksi}}" method="POST">
-                                                    @method('delete')
-                                                    @csrf
-                                                </form>
+                                                <a class="btn w-auto btn-primary" href="{{route('transaction.edit', $datas->id)}}">Edit</a>
                                             </th>
                                         </tr>
                                     @endforeach

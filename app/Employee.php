@@ -12,7 +12,6 @@ class Employee extends Model
 {
     protected $fillable = ['idPegawai','name','isAdmin','password', 'gender', 'kodeCollector'];
     public $incrementing = false;
-    protected $guard = 'admin';
     protected $table = 'employees';
     public static function boot()
     {
@@ -23,13 +22,5 @@ class Employee extends Model
             $code .= str_pad($countDataonTable, 4, 0, STR_PAD_LEFT );
             $item->idPegawai = $code;
         });
-    }
-    public function getAuthIdentifier()
-    {
-       Return $this->getKey();
-    }
-    public function getAuthPassword()
-    {
-        return $this->password;
     }
 }

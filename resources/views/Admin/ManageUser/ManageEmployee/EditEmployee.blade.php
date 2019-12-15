@@ -10,7 +10,6 @@
                         <div class="container-fluid">
 
                             @foreach($data as $datas)
-                                <button onclick="getGender()"> CEK</button>
                                 <h1>Edit Pegawai</h1>
                                 <form method="post" action="/employee/{{$datas->idPegawai}}"  onload="getGender()">
                                     @csrf

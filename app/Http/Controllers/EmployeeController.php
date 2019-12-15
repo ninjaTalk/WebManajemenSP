@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use App\Employee;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
@@ -32,6 +33,15 @@ class EmployeeController extends Controller
     {
         return view('Admin.ManageUser.ManageEmployee.AddEmployee');
     }
+    public function changeCollector(Request $request){
+        $dataUser = DB::table('customers')->where('kodeCollector', '=', $request->kodeCollector);
+        $dataEmployee = DB::table('employees')->where('idPegawai', '=', $request->idPegawai)->first();
+        $dataUser->update([
+            'kodeCollector' =>$dataEmployee->kodeCollector,
+            'idPegawai' =>$request->idPegawai
+        ]);
+        return redirect()->intended('/customer');
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -41,7 +51,6 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-
             //dd(Employee::count());
             $this->validate($request, [
                     'name' => 'required|max:50',
@@ -108,7 +117,7 @@ class EmployeeController extends Controller
         try {
             $data->update([
                 'name' => $request->name,
-                'isUser' => "0",
+                'isAdmin' => "0",
                 'password' => $request->password,
                 'gender' => $request->radioGender,
             ]);
@@ -126,14 +135,23 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $employee)
+    public function destroy($employee)
     {
-        try {
+        $dataEmplo = DB::table('employees')->where('idPegawai',  $employee)->first();
+        //dd($data->kodeCollector);
+//        try {
+            $getCol = $dataEmplo->kodeCollector;
             Session::flash('success', 'Penghapusan data berhasil');
             DB::delete("DELETE FROM employees WHERE idPegawai = '$employee'");
-        }catch (\Exception $e){
-            Session::flash('success', $e);
-        }
+            $data = Employee::all()->where("isAdmin", "=", "0");
+            $capsule = [
+                'data' =>$data,
+                'user' =>$getCol
+            ];
+            return view('Admin.ManageUser.ManageEmployee.switchCollector', ['data'=>$capsule]);
+//        }catch (\Exception $e){
+//            Session::flash('error', $e);
+//        }
         return redirect()->intended('/employee');
     }
 }

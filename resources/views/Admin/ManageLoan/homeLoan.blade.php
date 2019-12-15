@@ -37,10 +37,9 @@
                                         <th>Saldo</th>
                                         <th>Pokok Pinjaman</th>
                                         <th>Jenis Bunga</th>
-                                        <th class="col-md-1">Persentase Bunga</th>
+{{--                                        <th class="col-md-1">Persentase Bunga</th>--}}
                                         <th class="col-md-1">Jumlah Angsuran</th>
                                         <th>Jaminan</th>
-                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -54,16 +53,15 @@
                                             <th>Rp. {{$datas->saldoPinjaman}}</th>
                                             <th>Rp. {{$datas->pokokPinjaman}}</th>
                                             <th>{{$datas->loanType}}</th>
-                                            <th>
-                                                @if($datas->bunga == 0.02)
-                                                    2%
-                                                @else
-                                                    3%
-                                                @endif
-                                            </th>
+{{--                                            <th>--}}
+{{--                                                @if($datas->bunga == 0.02)--}}
+{{--                                                    2%--}}
+{{--                                                @else--}}
+{{--                                                    3%--}}
+{{--                                                @endif--}}
+{{--                                            </th>--}}
                                             <th>{{$datas->jmlAngsur}} Kali</th>
                                             <th>{{$datas->jaminan}}</th>
-                                            <th>{{$datas->status}}</th>
                                             <th>
                                                 <a class="btn btn-danger" href="#" onclick="
                                                     if (window.confirm('Apakah anda yakin ingin menghapus data ini ? ')){
@@ -80,9 +78,9 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                                @if(count($data)>6)
-                                    {{$data->Links()}}
-                                @endif
+{{--                                @if(count($data)>=6)--}}
+{{--                                    {{$data->Links()}}--}}
+{{--                                @endif--}}
                             </ul>
                         </div>
                     </div>

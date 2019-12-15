@@ -11,7 +11,7 @@ class Customer extends Model
 {
     use SoftDeletes;
     protected $table = 'customers';
-    protected $fillable = ['name', 'noKtp', 'gender', 'alamat', 'password',
+    protected $fillable = ['name', 'noKtp', 'gender', 'alamat', 'password', 'qrcode',
         'idPegawai', 'kodeCollector', 'ppNomor', 'kodeTabungan'];
     public $incrementing = false;
 
@@ -23,6 +23,11 @@ class Customer extends Model
             $code = $countDataonTable->idNasabah + 1;
             $item->idNasabah = $code;
         });
+//        static::created(function (Customer $item){
+//            $countDataonTable = DB::table('customers')->orderBy('created_at', 'desc')->first();
+//            $code = $countDataonTable->idNasabah + 1;
+//            $item->qrcode = "qr_".$code."_png";
+//        });
 
     }
 

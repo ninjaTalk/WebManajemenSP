@@ -36,7 +36,7 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                                @if(count($data)>6)
+                                @if(count($data)>=6)
                                     {{$data->Links()}}
                                 @endif
                             </ul>

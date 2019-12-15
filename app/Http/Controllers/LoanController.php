@@ -18,7 +18,7 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $data = Loan::all()->where('status', '=', 'BERJALAN');
+        $data = Loan::all()->where('status', '=', 'BERJALAN')->sortBy('tglPinjam', SORT_ASC );
         return view('Admin.ManageLoan.homeLoan', ['data'=>$data]);
     }
     public function indexLunas(){

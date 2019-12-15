@@ -30,6 +30,7 @@ Route::group( ['middleware' => 'auth' ], function()
     Route::resource('saving', 'SavingController');
     Route::resource('loan', 'LoanController');
     Route::get('/lunas', 'LoanController@indexLunas');
+    Route::post('/employee/changeCollector', 'EmployeeController@changeCollector');
 
     //Report Route
     Route::get('/menuReport', 'ReportController@menuShow');
