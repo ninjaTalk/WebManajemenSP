@@ -14,7 +14,17 @@ class CreateCustomersTable extends Migration
     public function up()
     {
         Schema::create('customers', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->integer('idNasbah')->primary();
+            $table->string('name', 100);
+            $table->string('noKtp', 16)->unique();
+            $table->string('gender', 10);
+            $table->string('alamat', 100);
+            $table->string('password', 8);
+            $table->string('qrcode', 8);
+            $table->string('idPegawai', 5);
+            $table->char('kodeCollector', 1);
+            $table->string('ppNomor', 20);
+            $table->string('kodeTabungan', 8);
             $table->timestamps();
         });
     }

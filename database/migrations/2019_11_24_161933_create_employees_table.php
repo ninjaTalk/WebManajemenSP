@@ -16,8 +16,8 @@ class CreateEmployeesTable extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->char('idPegawai', 5)->primary();
             $table->string('name', 50);
-            $table->string('isUser', 10);
-            $table->char('password', 8)->unique();
+            $table->string('isAdmin', 1);
+            $table->string('password', 255);
             $table->string('gender', 12);
             $table->char('kodeCollector', 1);
         });

@@ -14,7 +14,10 @@ class CreateSavingsTable extends Migration
     public function up()
     {
         Schema::create('savings', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->string('kodeTabungan', 8)->primary();
+            $table->date('tglLastInput');
+            $table->integer('saldo');
+            $table->integer('idNasabah');
             $table->timestamps();
         });
     }
