@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
+use App\Customer;
 use App\Employee;
+use App\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -32,18 +34,16 @@ class AdminController extends Controller
             'keyword' => 'required|min:1|max:20'
         ]);
         $checkBioEmployee = DB::table('employees')->where('idPegawai','like', $request->keyword)->get();
-        $checkBioCustomers = DB::table('customers')
-            ->join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
+        $checkBioCustomers = Customer::join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
             ->where('customers.idNasabah','like', $request->keyword)
             ->select('employees.name as namePegawai', 'customers.name', 'customers.noKtp',
                 'customers.gender', 'customers.alamat', 'customers.idNasabah', 'customers.kodeCollector')->get();
-        $checkSavings = DB::table('customers')
-            ->join('savings','savings.kodeTabungan', '=', 'customers.kodeTabungan')
+        $checkSavings = Customer::join('savings','savings.kodeTabungan', '=', 'customers.kodeTabungan')
             ->join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
             ->where('savings.kodeTabungan','like',  $request->keyword)
             ->select('employees.name as namePegawai', 'customers.name', 'customers.noKtp',
                 'savings.kodeTabungan', 'savings.saldo', 'savings.tglLastInput')->get();
-        $checkLoans = DB::table('loans')->where('ppNomor','like',  $request->keyword)->get();
+        $checkLoans = Loan::where('ppNomor','like',  $request->keyword)->get();
 
         if (count($checkBioEmployee) >=1){
 //            dd($checkBioEmployee);

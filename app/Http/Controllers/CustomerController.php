@@ -8,6 +8,7 @@ use App\Saving;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 
@@ -21,8 +22,8 @@ class CustomerController extends Controller
     public function index()
     {
 
-        $data = DB::table('customers') ->join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
-            ->where('customers.deleted_at','=', null)
+        $data = Customer::join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
+//            ->where('customers.deleted_at','=', null)
             ->select('employees.name as namePegawai', 'customers.name', 'customers.noKtp',
                 'customers.gender', 'customers.alamat', 'customers.idNasabah', 'customers.kodeCollector')->paginate(6);
         return view("Admin.ManageUser.ManageCustomer.ShowCustomer", compact('data'));
@@ -164,7 +165,13 @@ class CustomerController extends Controller
                 'deleted_at'=> Carbon::now(),
                 'noKtp' =>null
                 ]);
-            $userGet = DB::table('customers')->where('idNasabah', '=', $customer)->first();
+
+            $userGet = $dataUser->first();
+            //dd($userGet->qrcode);
+            $QR_path = public_path("\QR_Image\qr_$userGet->idNasabah.png");
+            if (File::exists($QR_path)){
+                File::delete($QR_path);
+            }
             $dataSaving = DB::table('savings')->where('kodeTabungan', '=', $userGet->kodeTabungan);
             $dataSaving->update(['deleted_at'=>Carbon::now()]);
             if (($userGet->ppNomor!=null)||($userGet->ppNomor!='-')){

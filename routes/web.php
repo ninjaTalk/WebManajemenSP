@@ -10,9 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['after'=>'guest'], function (){
+    Route::get('/', 'Auth\LoginController@showAdminLoginForm')->name('formLogin');
+    Route::post('/login/admin', 'Auth\LoginController@adminLogin');
+});
 
-Route::get('/', 'Auth\LoginController@showAdminLoginForm')->name('formLogin');
-Route::post('/login/admin', 'Auth\LoginController@adminLogin');
 
 Route::group( ['middleware' => 'auth' ], function()
 {

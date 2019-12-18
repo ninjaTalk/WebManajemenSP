@@ -16,9 +16,9 @@ class SavingController extends Controller
      */
     public function index()
     {
-        $data = DB::table('customers')->join('savings','savings.kodeTabungan', '=', 'customers.kodeTabungan')
+        $data = Customer::join('savings','savings.kodeTabungan', '=', 'customers.kodeTabungan')
             ->join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
-            ->where('customers.deleted_at', '=', null)
+//            ->where('customers.deleted_at', '=', null)
             ->select('employees.name as namePegawai', 'customers.name', 'customers.noKtp',
                 'savings.kodeTabungan', 'savings.saldo', 'savings.tglLastInput')->paginate(6);
         return view('Admin.ManageSaving.homeSaving', compact('data'));
