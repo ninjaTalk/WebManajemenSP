@@ -36,7 +36,7 @@ class LoanController extends Controller
     {
         $Check = DB::table('customers')->where('idNasabah', $request->idNasabah)->first();
         //return $Check->ppNomor;
-            if (($Check->ppNomor != "-")) {
+            if (($Check->ppNomor != null)) {
                 Session::flash('error', 'Nasabah ini masih memiliki pinjaman yang sedang BERJALAN');
                 return redirect()->intended('/loan');
             }else{
@@ -66,10 +66,12 @@ class LoanController extends Controller
                         'name' => $dataNasabah->name,
                         'noKtp' => $dataNasabah->noKtp,
                         'status' => "BERJALAN",
+                        'sisaSaldo'=>$request->saldoPinjaman,
                         'idPegawai' => $dataNasabah->idPegawai,
                         'jmlAngsur' => 10,
-                        'pokokPinjaman' =>$pokokPinjaman,
-                        'bunga' => $bunga
+                        'pokokPinjamaan' =>$pokokPinjaman,
+                        'bunga' => $bunga,
+                        'idNasabah' =>$request->idNasabah
                 ]);
                     $updateCustomer = DB::table('customers')->where('idNasabah', $request->idNasabah);
                     $updateCustomer->update([
@@ -146,18 +148,18 @@ class LoanController extends Controller
     public function destroy($loan)
     {
         $data = Loan::find($loan);
-        dd($data);
+        //dd($data);
         $getPP = DB::table('loans')->where('id', '=',$loan)->first();
         $dataUser = $getPP->ppNomor;
         $data->update([
-            'ppNomor'=>'-'
+            'ppNomor'=>null
         ]);
         $data->delete();
-        $getUser = DB::table('customers')
-            ->where('ppNomor', '=', $dataUser);
-        $getUser->update([
-            'ppNomor' => '-'
-        ]);
+//        $getUser = DB::table('customers')
+//            ->where('ppNomor', '=', $dataUser);
+//        $getUser->update([
+//            'ppNomor' => null
+//        ]);
         Session::flash('success', 'Penambahan pinjaman berhasil');
         return redirect()->intended('/loan');
     }

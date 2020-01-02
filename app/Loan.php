@@ -10,7 +10,7 @@ class Loan extends Model
 {
     use SoftDeletes;
     protected $fillable = ['ppNomor', 'tglPinjam', 'saldoPinjaman',
-        'loanType', 'jaminan', 'name', 'noKtp', 'status', 'idPegawai',
+        'loanType', 'jaminan', 'name', 'noKtp', 'status', 'idPegawai','idNasabah',
         'bunga', 'pokokPinjaman', 'jmlAngsur'];
     protected $detes = ['deleted_at'];
 }

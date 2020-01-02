@@ -68,15 +68,6 @@ class AdminController extends Controller
 
     }
 
-    public function fitlerLoan($kode){
-        try{
-            $checkLoans = DB::table('loans')->where('ppNomor', '=', $kode)->first();
-            dd($checkLoans->ppNomor);
-        }catch (\Exception $e){
-            return 'failed';
-        }
-    }
-
     /**
      * Show the form for creating a new resource.
      *

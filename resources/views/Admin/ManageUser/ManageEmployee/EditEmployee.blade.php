@@ -1,5 +1,5 @@
 @extends('layouts/master')
-@section('title', 'Data Anggoata')
+@section('title', 'Edit Pegawai')
 
 @section('content')
     <div class="container">

@@ -58,9 +58,7 @@ class CustomerController extends Controller
             $data = Customer::all()->where('idPegawai',
                 '=', "$request->idPegawai");
             $users = DB::table('employees')->where('idPegawai', $request->idPegawai)->first();
-            //$tempKodeCollect = ;
-            // dd($users);
-            //$countDataonTable = Employee::count();
+
             $lastUser = DB::table('customers')->orderBy('created_at', 'desc')->first();
             $lastID = $lastUser->idNasabah;
             $incrementID = $lastID + 1;
@@ -141,6 +139,7 @@ class CustomerController extends Controller
                 'noKtp' => [Rule::unique('customers', 'noKtp')
                     ->ignore($customer, 'idNasabah'), 'required']
             ]);
+            $coba = Session::get('name');
             $dataUser = DB::table('customers')->where('idNasabah', $customer);
             try{
                 $dataUser->update([
@@ -150,7 +149,7 @@ class CustomerController extends Controller
                     'password' => $request->password,
                     'noKtp' => $request->noKtp
                 ]);
-                Session::flash('success', 'Perubahan data berhasil');
+                Session::flash('success', 'Perubahan data berhasil'.$coba);
             }catch (\Exception $e){
                 Session::flash('error', 'Nomer KTP tidak bisa didaftarkan karena sudah pernah tersimpan di dabatase');
             }

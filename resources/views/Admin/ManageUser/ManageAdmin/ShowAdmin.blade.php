@@ -5,7 +5,8 @@
         <div class="main-content">
             <div class="container-fluid">
                 <div class="panel">
-                    <div class="panel-heading">
+                    <div class="panel-heading" style="background-color: #3399ff; color: white">
+                        <img style="float: left;margin-right: 10px;" src="{{asset('admin/assets/img/avatar.png')}}" alt="icon_admin" height="75px"/>
                         <h3><strong>Data Admin</strong></h3>
                         <h5 style="margin-top: -5px;margin-left: 10px">Menampilkan Data Admin, beserta fungsi - fungsi pengelolaan user Admin</h5>
                     </div>
@@ -20,6 +21,7 @@
                                 {{session()->get('error')}}
                             </div>
                         @endif
+                        <div style="margin-top: 20px;"></div>
                         <a href="/admins/create" class="btn btn-primary">Tambah Admin Baru</a>
                         <div class="card-body">
                             <ul class="list-group pagination col-md-12">

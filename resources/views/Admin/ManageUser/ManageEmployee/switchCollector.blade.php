@@ -1,5 +1,5 @@
 @extends('layouts/master')
-@section('title', 'Data Anggoata')
+@section('title', 'Penggantian Collector')
 
 @section('content')
     <div class="container">

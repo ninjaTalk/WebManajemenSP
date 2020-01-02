@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Employee;
+use App\Loan;
+use App\Log_activity;
+use App\Saving;
 use App\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -19,16 +20,14 @@ class TransactionController extends Controller
 
     public function index()
     {
-        //dd(Auth::user());
-        //dd(\session()->get());
-//        dd(Auth::guard('admin')->user());
-        //dd(Session::get('name'));
+
         $data = DB::table('transactions')
             ->join('customers','transactions.idNasabah',
             '=', 'customers.idNasabah')
             ->select('transactions.id', 'transactions.tglInput', 'transactions.kodeTabungan',
                 'transactions.ppNomor', 'customers.name', 'transactions.transactionType',
                 'transactions.debit', 'transactions.debt', 'transactions.kodeTransaksi')
+            ->where('transactions.description' ,'=', null)
             ->orderByDesc('transactions.tglInput')
             ->paginate(6);
         return view('Admin.homeAdmin', compact('data'));
@@ -87,6 +86,11 @@ class TransactionController extends Controller
         return view('Admin.ManageTransaction.EditTransaction', compact('data'));
     }
 
+
+    public function editTransaction($idNasabah, $tgl, $data){
+        $kodeTransaksi = "$idNasabah/$tgl/$data/Edited";
+        return $kodeTransaksi;
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -96,61 +100,103 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $transaction)
     {
-        //dd($request->transactionType);
+        $id = Session::get('idPegawai');
+        //dd($request->getTgl);
         if ($request->transactionType == "Tabungan"){
-            $this->validate($request, ['debit'=>'required']);
+            $this->validate($request, [
+                'debit'=>'required',
+                'description'=>'required|max:200']);
             //get saldo in saving
-            try {
-                $getSaldo = DB::table('savings')->where('kodeTabungan', $request->kodeTabungan)->first();
+                $getSaldo = Saving::where('kodeTabungan', $request->kodeTabungan)->first();
                 //get debit in transaction will be edit
-                $getNowDebit = DB::table('transactions')->where('id', '=', $transaction)->first();
-
+                $recordActivities = Transaction::find($transaction);
                 //save debit in var
-                $nowDebit = $getNowDebit->debit;
+                $nowDebit = $recordActivities->debit;
                 //minus saldo so the number of saldo will become before enter or input savings
                 $minusSaldo = $getSaldo->saldo - $nowDebit;
                 //update transaction
-                $data = DB::table('transactions')->where('id', '=', $transaction);
-                $data->update([
+                $kodeTransaksi = $this->editTransaction($recordActivities->idNasabah, $request->getTgl, $request->kodeTabungan);
+                try {
+                    Transaction::create([
+                        'kodeTransaksi' => $this->editTransaction($recordActivities->idNasabah, $request->getTgl, $request->kodeTabungan),
+                        'tglInput' => $request->getTgl,
+                        'idPegawai' => $id,
+                        'idNasabah' => $recordActivities->idNasabah,
+                        'kodeTabungan' => $request->kodeTabungan,
+                        'transactionType' => 'Tabungan',
+                        'description' => "Perubahan Karena : $request->description. Debit dari $recordActivities->debit menjadi $request->debit",
+                        'debit' =>$recordActivities->debit,
+                    ]);
+                }catch (\Exception $e){
+                    $setEdit = Transaction::where('kodeTransaksi', '=',$kodeTransaksi);
+                    $setEdit->update([
+                        'idPegawai' =>$id,
+                        'description' => "Perubahan Karena : $request->description. Debit dari $recordActivities->debit menjadi $request->debit",
+                        'debit' => $recordActivities->debit,
+                    ]);
+                }
+                $recordActivities->update([
                     'debit' => $request->debit,
                 ]);
-                //dd($setSaving);
-                $setSaving = DB::table('savings')->where('kodeTabungan', "$request->kodeTabungan");
+                $setSaving = DB::table('savings')->where('kodeTabungan',"=", $request->kodeTabungan);
                 $countDebit = $minusSaldo + $request->debit;
+                //dd($countDebit);
                 $setSaving->update([
                     'saldo' => $countDebit
                 ]);
-                Session::flash('success', 'Perubahan data berhasil');
-            }catch (\Exception $e){
-                Session::flash('error', $e);
-            }
+            Session::flash('success', 'Perubahan data berhasil');
         }
         else if ($request->transactionType == "Pinjaman"){
-            $this->validate($request, ['debt'=>'required']);
-            //get soldo pinjaman
-            try {
-                $getSaldoPinjaman = DB::table('loans')->where('ppNomor', $request->ppNomor)->first();
+            $this->validate($request, [
+                'debt'=>'required',
+                'description' =>'required|max:200'
+            ]);
+                $getRecord = Transaction::find($transaction);
+                $getPPnomor = $getRecord->ppNomor;
+                $getRecordLoan = Loan::where('ppNomor', '=', $getPPnomor)->first();
+                //dd($check);
+//                return $getRecordLoan->saldoPinjaman;,
+                $plusSaldoPinjaman = $getRecordLoan->sisaSaldo + $getRecord->debt;
+                $countDebt = $plusSaldoPinjaman - $request->debt;
+                try {
+                    Transaction::create([
+                        'kodeTransaksi' => $this->editTransaction($getRecord->idNasabah, $request->getTgl, $request->ppNomor),
+                        'idPegawai' => $id,
+                        'tglInput' => $request->getTgl,
+                        'idNasabah' => $getRecord->idNasabah,
+                        'ppNomor' => $request->ppNomor,
+                        'transactionType' => 'Pinjaman',
+                        'description' => "Perubahan Karena : $request->description. Debt dari $getRecord->debt menjadi $request->debt",
+                        'debt' => $getRecord->debt,
+                        'sisaSaldo' => $countDebt
+                    ]);
+                }catch (\Exception $e){
+                   $set = Transaction::where('kodeTransaksi', '=',$this->editTransaction($getRecord->idNasabah, $request->getTgl, $request->ppNomor));
+                   $set->update([
+                      'sisaSaldo' =>$countDebt,
+                      'idPegawai' =>$id,
+                      'description' => "Perubahan Karena : $request->description. Debit dari $getRecord->debt menjadi $request->debt",
+                      'debt' => $getRecord->debt,
+                   ]);
+                }
 
-                //get debt
-                $getDebt = DB::table('transactions')->where('id', $request->id)->first();
-
-                $minusSaldoPinjaman = $getSaldoPinjaman - $request->debt;
-                $datas = DB::table('transactions')->where('id', '=', $transaction);
-                $datas->update([
+                $getRecord->update([
                     'debt' => $request->debt,
                 ]);
                 $setLoan = DB::table('loans')->where('ppNomor', '=', "$request->ppNomor");
-                $countDebt = $minusSaldoPinjaman + $request->debt;
+                if ($countDebt != 0){
+                    $statusLoan = "BERJALAN";
+                }else{
+                    $statusLoan = "LUNAS";
+                }
                 $setLoan->update([
-                    'saldoPinjaman' => $countDebt
-                ]); Session::flash('success', 'Perubahan data berhasil');
-            }catch (\Exception $e){
-                Session::flash('error', $e);
-            }
-
+                    'status' =>$statusLoan,
+                    'sisaSaldo' => $countDebt
+                ]);
+            Session::flash('success', 'Perubahan data berhasil');
         }
-        return redirect()->intended('/');
-
+        Session::flash('success', 'Perubahan data s berhasil');
+        return redirect()->intended('/home');
     }
 
     /**

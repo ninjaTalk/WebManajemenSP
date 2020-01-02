@@ -1,12 +1,24 @@
 @extends('layouts/master')
-@section('title', 'Data Transaksi')
+@section('title', 'Laporan Simpanan')
 @section('content')
     <div class="main">
         <div class="main-content">
             <div class="container-fluid">
                 <div class="panel">
+                    <div class="panel-body" style="background-color: #00b488;padding-left: 0; padding-top: 0;padding-bottom: 0;">
+                        <div class="col-md-1" style="margin-right: 10px; background-color: white">
+                            <img style="padding: 5px 0 5px 5px" src="{{asset('admin/assets/img/tabungan.png')}}"
+                                 width="95" height="90" alt="Icon_tabungan" >
+                        </div>
+                        <div class="col-md-6 mr-3 float-right" style="color: white">
+                            <h3>
+                                <strong>Laporan Simpanan</strong>
+                            </h3>
+                            <p>Menampilkan data simapanan nasabah berdasarkan <strong>Kode Collector</strong></p>
+                        </div>
+                    </div>
+                    <hr style="margin: 10px 0 0 0"/>
                     <div class="panel-heading">
-                        <h3>Data Transaksi</h3>
                         <div class="form-group">
                             <form action="/selectiveCollect" method="get">
                                 <div class="form-group form-inline col-md-8" >
@@ -20,16 +32,14 @@
                                     <input  type="submit" value="CARI" class="btn btn-primary">
                                 </div>
                             </form>
+                            <form action="/PSavings" method="get">
+                                <input type="hidden" id="cloneDate" name="cloneCollect" value="{{$capsule['selected']}}">
+                                <input onclick="setClone()" type="submit" class="btn btn-danger" value="CETAK">
+                            </form>
                         </div>
-
-                        <form action="/PSavings" method="get">
-                            <input type="hidden" id="cloneDate" name="cloneCollect" value="{{$capsule['selected']}}">
-                            <input onclick="setClone()" type="submit" class="btn btn-danger" value="CETAK">
-                        </form>
-
                     </div>
-                    <div class="panel-body">
-                        <div class="panel-body">
+
+                        <div class="panel-body" style="margin-top: -40px;">
                             @if(session()->has('success'))
                                 <div class="alert alert-success m-0 p-2">
                                     {{session()->get('success')}}
@@ -60,7 +70,7 @@
                                                 <th>{{$datas->kodeTabungan}}</th>
                                                 <th>{{$datas->name}}</th>
                                                 <th>{{$datas->alamat}}</th>
-                                                <th>{{$datas->saldo}}</th>
+                                                <th>Rp. {{number_format($datas->saldo, 0, "", ",")}}</th>
                                             </tr>
                                         @endforeach
                                         </tbody>
@@ -68,7 +78,6 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -77,8 +86,8 @@
 
         function setClone() {
             var date = document.getElementById("myDate").value;
-            alert(date);
-            document.getElementById("cloneDate").defaultValue = document.getElementById("selector").value + "";
+            //alert(date);
+            //document.getElementById("cloneDate").defaultValue = document.getElementById("selector").value + "";
         }
     </script>
     <script src="jquery-3.4.1.min.js"></script>

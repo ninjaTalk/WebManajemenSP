@@ -1,5 +1,5 @@
 @extends('layouts/master')
-@section('title', 'Data Anggoata')
+@section('title', 'Edit Transaksi')
 
 @section('content')
     <div class="container">
@@ -14,12 +14,12 @@
                                     @csrf
                                     @method('patch')
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-6" style="padding-left: 0">
                                             <label>Kode Transaksi</label>
                                             <input type="text" class="form-control" autofocus value="{{$datas->kodeTransaksi}}"
                                                    disabled placeholder="Masukkan nama pegawai" name="kodeTransaksi">
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-6" style="padding-right: 0">
                                             <label>ID Nasabah</label>
                                             <input type="text" class="form-control"value="{{$datas->idNasabah}}" disabled >
                                         </div>
@@ -31,15 +31,15 @@
                                     <div class="form-group">
                                         <input type="hidden" class="form-control"value="{{$datas->kodeTabungan}}"
                                                name="kodeTabungan"  >
-                                    </div>
-                                    <div class="form-group">
                                         <input type="hidden" class="form-control"value="{{$datas->ppNomor}}"
-                                               name="ppNomor"  >
+                                               name="ppNomor" >
+                                        <input type="hidden" class="form-control" value="{{$datas->tglInput}}"
+                                               name="getTgl">
                                     </div>
                                     <div class="form-group">
                                         <label>Tanggal Input</label>
                                         <input type="text" class="form-control" autofocus value="{{$datas->tglInput}}"
-                                               placeholder="Masukkan nama pegawai" name="tglInput" disabled>
+                                               disabled>
                                     </div>
                                     @if($datas->debit!=null)
                                         <div class="form-group">
@@ -60,7 +60,14 @@
                                             @enderror
                                         </div>
                                     @endif
-
+                                    <div class="form-group">
+                                        <label for="comment">Alasan Perubahan</label>
+                                        <textarea class="form-control @error('description') is-invalid @enderror"
+                                                  rows="5" name="description"></textarea>
+                                        @error('description')
+                                            <div class="alert-danger">{{$message}}</div>
+                                        @enderror
+                                    </div>
 
                                     <button type="submit" class="btn btn-primary">Perbaharui Data</button>
                                 </form>

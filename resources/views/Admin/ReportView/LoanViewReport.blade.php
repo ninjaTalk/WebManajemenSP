@@ -67,11 +67,21 @@
     #l3{
         font-size: 18px;
     }
+    #image{
+        float: outside;
+        text-align: justify;
+    }
+    #heading{
+        text-align: center;
+    }
+
 </style>
-<center>
+
     <div id="ReportView">
-{{--        <img src="{{asset('admin/assets/img/logo.png')}}"--}}
-{{--             alt="logo" height="75px">--}}
+       <div>
+           <img id="image" src="{{public_path('admin/assets/img/logo.png')}}"
+                alt="logo" height="75px" width="75px">
+       </div>
         <div id="heading">
             <label id="l1"><strong>KOPERASI CATUR SARI CAHAYA</strong></label>
             <div></div>
@@ -83,41 +93,48 @@
         </div>
         <hr>
         <hr>
-        <center>
             <div id="textHeading">
                 <form class="float-left">
                     <label><strong>NAMA:  {{$capsule['user']->name}}</strong></label>
                     <div></div>
                     <label><strong>ALAMAT: {{$capsule['user']->alamat}}</strong></label>
                     <div></div>
-                    <label><strong>PP NOMOR : {{$capsule['user']->ppNomor}}</strong></label>
+                    <label><strong>PP NOMOR : {{$capsule['ppNomor']}}</strong></label>
                     <div></div>
                     <label><strong>TANGGAl : {{$capsule['day']}} {{$capsule['mouth']}} {{$capsule['year']}}</strong></label>
                 </form>
                 <p>Kartu ini hendaknya dibawa setiap pembayaran angsuran</p>
-                <label>Pokok Pinjaman :   <strong>Rp.{{$capsule['dataLoans']->saldoPinjaman}}</strong> dalam 10 kali Angsuran</label>
+                <label>Pokok Pinjaman :   <strong>Rp.{{number_format($capsule['dataLoans']->saldoPinjaman, 0,"", ",")}}</strong> dalam 10 kali Angsuran</label>
             </div>
-        </center>
+
             <table>
                 <thead >
                 <tr>
                     {{--            <th>Bulan</th>--}}
-                    <th>Tanggal</th>
-                    <th>Pokok</th>
-                    <th>Bunga 3%</th>
-                    <th>Jumlah</th>
-                    <th>Saldo Pinjaman</th>
+                    <th style="width: 80px">Tanggal</th>
+                    <th style="width: 100px">Pokok</th>
+                    <th style="width: 80px">Bunga 3%</th>
+                    <th style="width: 100px">Jumlah</th>
+                    <th style="width: 100px">Saldo Pinjaman</th>
                     <th>Paraf</th>
                 </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Rp. {{number_format($capsule['dataLoans']->saldoPinjaman, 0, "", ",")}}</th>
+                        <th></th>
+                    </tr>
                 @foreach($capsule['data'] as $datas)
                     <tr>
                         <th>{{$datas->tglInput}}</th>
-                        <th>{{$datas->debt}}</th>
-                        <th>{{$datas->bunga}}</th>
-                        <th>{{$datas->jml}}</th>
-                        <th>{{$datas->sisaSaldo}}</th>
+                        <th>Rp. {{number_format($datas->debt, 0, "", ",")}}</th>
+                        <th>Rp. {{number_format($datas->bunga, 0, "", ",")}}</th>
+                        <th>Rp. {{number_format($datas->jml, 0, "", ",")}}</th>
+                        <th>Rp. {{number_format($datas->sisaSaldo, 0, "", ",")}}</th>
                         <th></th>
                     </tr>
                 @endforeach
@@ -147,6 +164,5 @@
             </table>
         </div>
     </div>
-</center>
 </body>
 </html>

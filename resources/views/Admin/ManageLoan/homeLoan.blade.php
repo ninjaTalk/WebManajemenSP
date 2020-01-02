@@ -1,14 +1,24 @@
 @extends('layouts.master')
-@section('title', 'Data Anggoata')
+@section('title', 'Data Pinjaman')
 
 @section('content')
     <div class="main">
         <div class="main-content">
             <div class="container-fluid">
                 <div class="panel">
-                    <div class="panel-heading">
-                        <h3><strong>Data Pinjaman</strong></h3>
-                        <h5 style="margin-top: -5px;margin-left: 10px">Menampilkan Data Pinjaman Nasabah yang sedang BERJALAN ataupun LUNAS</h5>
+                    <div class="panel-body" style="background-color: #5fb95f;padding-left: 0; padding-top: 0;padding-bottom: 0; margin-bottom: 30px">
+                        <div class="col-md-1" style="margin-right: 10px; background-color: white">
+                            <img  src="{{asset('admin/assets/img/loan.png')}}"
+                                  width="80" height="80" alt="Icon_pinjaman" >
+                        </div>
+                        <div class="col-md-6 mr-3 float-right" style="color: white">
+                            <h3>
+                                <strong>Data Pinjaman</strong>
+                            </h3>
+                            <h5 style="margin-top: -5px;margin-left: 10px">
+                                Halaman ini menampilkan data pinajaman nasabah yang masih berjalan
+                            </h5>
+                        </div>
                     </div>
                     <div class="panel-body">
                         @if(session()->has('success'))

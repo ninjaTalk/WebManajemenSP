@@ -2,8 +2,8 @@
 @section('content')
 
     <center xmlns="http://www.w3.org/1999/html">
-        <h5 style="color: white"><strong>SISTEM MANAJEMEN SIMPAN PINJAM</strong></h5>
-        <h1 style="color: white"><strong>KOPERASI CATUR SARI CAHAYA</strong></h1>
+            <h5 class="text-uppercase" style="color: white"><strong>{{$data->sistemName}}</strong></h5>
+            <h1 class="text-uppercase" style="color: white"><strong>{{$data->name}}</strong></h1>
         <div class="d-flex justify-content-center">
             <div class="brand_logo_container">
                 <img class="mb-3 mt-3 brand_logo" src="{{asset('admin/assets/img/logo.png')}}"
@@ -33,7 +33,7 @@
                             @csrf
                             <div class="form-group row">
                                 <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('ID Pegawai') }}</label>
-
+                                <input type="hidden" name="koperasiID" value="{{$data->id}}">
                                 <div class="col-md-6">
                                     <input  type="text" class="form-control @error('idPegawai') is-invalid @enderror"
                                             name="idPegawai" value="{{ old('idPegawai') }}" required

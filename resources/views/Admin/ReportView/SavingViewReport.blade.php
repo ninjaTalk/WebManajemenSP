@@ -14,23 +14,57 @@
 
     table tr td,
     table tr th{
-        font-family: "Times New Roman", serif;
+        font-family: "Times New Roman", sans-serif;
         border: 1px solid black;
-        font-size: 12pt;
-        text-align: justify;
+        font-size: 11pt;
+        text-align: center;
         padding: 8px;
+    }
+    #l1{
+        font-family: "Times New Roman", sans-serif;
+        text-transform: uppercase;
+        font-size: 16px;
+    }
+    .l2{
+        font-family: "Times New Roman", sans-serif;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+    #l3{
+        font-family: "Times New Roman", sans-serif;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+    #image{
+        float: outside;
+        text-align: justify;
+    }
+    #heading{
+        text-align: center;
+    }
+    .space{
+        margin-top: 10px;
     }
 </style>
 <center>
-    <h6>MENU UTAMA</h6>
-    <h4>SALDO SIMPANAN BULAN {{$capsule['mouth']}} {{$capsule['year']}} </h4>
-    <h4>NAMA KOLEKTOR : {{$capsule['collect']->name}}</h4>
-    <h4>KODE AREA : {{$capsule['selected']}}</h4>
+    <img id="image" src="{{public_path('admin/assets/img/logo.png')}}"
+         alt="logo" height="75px" width="75px">
+    <div  id="heading">
+        <label>MENU UTAMA</label>
+        <div></div>
+        <label id="l1"><strong>SALDO SIMPANAN BULAN {{$capsule['mouth']}} {{$capsule['year']}}</strong></label>
+        <div class="space"></div>
+        <label class="l2"><strong>NAMA KOLEKTOR : {{$capsule['collect']->name}}</strong></label>
+        <div></div>
+        <label id="l3"><strong>KODE COLLECTOR : {{$capsule['selected']}}</strong></label>
+    </div>
+    <hr style="margin-top: 20px;">
+    <hr>
 
     <table>
-        <thead >
+        <thead>
         <tr>
-            <th>ID</th>
+            <th>ID NASABAH</th>
             <th>KODE TABUNGAN</th>
             <th>NAMA NASABAH</th>
             <th>ALAMAT</th>
@@ -44,7 +78,7 @@
                 <th>{{$datas->kodeTabungan}}</th>
                 <th>{{$datas->name}}</th>
                 <th>{{$datas->alamat}}</th>
-                <th>Rp. {{$datas->saldo}}</th>
+                <th>Rp. {{number_format($datas->saldo, 0, "", ",")}}</th>
             </tr>
         @endforeach
         </tbody>

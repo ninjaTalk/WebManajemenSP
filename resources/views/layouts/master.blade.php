@@ -37,7 +37,7 @@
         <div class="brand">
             <a href="/" style="font-size: 18px; color: #0c1312;">
                 <img src="{{asset('admin/assets/img/logo.png')}}" style="background: #f8f8f8" width="60" height="60" alt="Logo Koperasi" >
-                <strong>KOPERASI CATUR SARI CAHAYA</strong>
+                <strong class="text-uppercase">{{\Illuminate\Support\Facades\Session::get('koperasiName')}}</strong>
             </a>
             <!-- Right Side Of Navbar -->
         </div>
@@ -54,7 +54,7 @@
                    if (window.confirm('Apakah anda yakin ingin keluar (logout) dari sistem ?')){
                        document.getElementById('logout-form').submit();
                    }">
-                    <i class="fa fa-rocket"></i> <span>Logout</span></a>
+                    <i class="lnr lnr-exit"></i> <span>Logout</span></a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
@@ -73,7 +73,7 @@
                     <li><a href="/saving" class=""><i class="lnr lnr-chart-bars"></i> <span>Simpanan</span></a></li>
                     <li><a href="/loan" class=""><i class="lnr lnr-book"></i> <span>Pinjaman</span></a></li>
                     <li><a href="/menuReport" class=""><i class="lnr lnr-printer"></i> <span>Cetak Laporan</span></a></li>
-                    <li><a href="/search" class=""><i class="lnr lnr-cloud-check"></i> <span>Pencarian</span></a></li>
+{{--                    <li><a href="/search" class=""><i class="lnr lnr-cloud-check"></i> <span>Pencarian</span></a></li>--}}
                 </ul>
             </nav>
         </div>
@@ -85,12 +85,12 @@
     </main>
 
 <!-- END MAIN -->
-    <div class="clearfix"></div>
-    <footer>
-        <div class="container-fluid">
-            <p class="copyright">&copy; 2017 <a href="https://www.themeineed.com" target="_blank">Theme I Need</a>. All Rights Reserved.</p>
-        </div>
-    </footer>
+{{--    <div class="clearfix"></div>--}}
+{{--    <footer>--}}
+{{--        <div class="container-fluid">--}}
+{{--            <p class="copyright">&copy; 2017 <a href="https://www.themeineed.com" target="_blank">Theme I Need</a>. All Rights Reserved.</p>--}}
+{{--        </div>--}}
+{{--    </footer>--}}
 </div>
 <!-- END WRAPPER -->
 <!-- Javascript -->
