@@ -6,6 +6,21 @@
         <div class="main-content">
             <div class="container-fluid">
                 <div class="panel">
+                    <div class="panel-body" style="background-color: #5fb95f;
+                    padding: 0 0 0 0; margin-bottom: 10px;">
+                        <div class="col-md-1" style="margin-right: 10px; background-color: white">
+                            <img  src="{{asset('admin/assets/img/paid2.png')}}"
+                                  width="80" height="80" alt="Icon_pinjaman" >
+                        </div>
+                        <div class="col-md-6 mr-3 float-right" style="color: white">
+                            <h3>
+                                <strong>Data Lunas</strong>
+                            </h3>
+                            <h5 style="margin-top: -5px;margin-left: 10px">
+                                Halaman ini menampilkan data pinajaman nasabah yang telah lunas
+                            </h5>
+                        </div>
+                    </div>
                     <div class="panel-body">
                         @if(session()->has('success'))
                             <div class="alert alert-success">

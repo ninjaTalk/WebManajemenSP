@@ -69,7 +69,7 @@
             <nav>
                 <ul class="nav">
                     <li><a href="/" class="active"><i class="lnr lnr-home"></i> <span>Beranda</span></a></li>
-                    <li><a href="/ManageUser" class=""><i class="lnr lnr-users"></i> <span>Kelola Pengguna</span></a></li>
+                    <li><a href="/ManageUser" class="active02"><i class="lnr lnr-users"></i> <span>Kelola Pengguna</span></a></li>
                     <li><a href="/saving" class=""><i class="lnr lnr-chart-bars"></i> <span>Simpanan</span></a></li>
                     <li><a href="/loan" class=""><i class="lnr lnr-book"></i> <span>Pinjaman</span></a></li>
                     <li><a href="/menuReport" class=""><i class="lnr lnr-printer"></i> <span>Cetak Laporan</span></a></li>

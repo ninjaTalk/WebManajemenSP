@@ -2,14 +2,20 @@
 @section('title', 'Edit Admin')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-8">
-                <div class="main">
-                    <div class="main-content">
-                        <div class="container-fluid">
+    <div class="main">
+        <div style="width: auto; background-color: #3399ff; padding: 10px 5px 5px 5px;">
+            <h1 style="margin-bottom: 30px !important;margin-left: 20px !important;color: white;text-transform: uppercase" >
+                <strong>
+                    EDIT Admin
+                </strong>
+            </h1>
+        </div>
+        <div class="container-fluid" style="padding-left: 0" >
+            <div class="main" style="padding: 0 0 0 0">
+                <div class="main-content" >
+                    <div class="panel col-md-9">
+                        <div class="panel-body" style=" padding: 35px 25px 25px 40px; font-size: 16px ">
                             @foreach($data as $datas)
-                                <h1>Edit Admin</h1>
                                 <form method="post" action="/admins/{{$datas->idPegawai}}">
                                     @csrf
                                     @method('patch')
@@ -50,7 +56,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>password</label>
+                                        <label>Password</label>
                                         <input type="text" class="form-control @error('password') is-invalid @enderror"
                                                name="password" placeholder="Masukkan password" value="{{$datas->password}}">
                                         @error('password')

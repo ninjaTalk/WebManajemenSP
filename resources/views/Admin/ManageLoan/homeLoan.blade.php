@@ -6,7 +6,8 @@
         <div class="main-content">
             <div class="container-fluid">
                 <div class="panel">
-                    <div class="panel-body" style="background-color: #5fb95f;padding-left: 0; padding-top: 0;padding-bottom: 0; margin-bottom: 30px">
+                    <div class="panel-body" style="background-color: #5fb95f;
+                    padding: 0 0 0 0; margin-bottom: 10px;">
                         <div class="col-md-1" style="margin-right: 10px; background-color: white">
                             <img  src="{{asset('admin/assets/img/loan.png')}}"
                                   width="80" height="80" alt="Icon_pinjaman" >
