@@ -6,8 +6,8 @@
             <h1 class="text-uppercase" style="color: white"><strong>{{$data->name}}</strong></h1>
         <div class="d-flex justify-content-center">
             <div class="brand_logo_container">
-                <img class="mb-3 mt-3 brand_logo" src="{{asset('admin/assets/img/logo.png')}}"
-                     alt="logo" height="150px" width="150px" >
+                <img class="mb-3 mt-3 brand_logo" src="{{asset('admin/assets/img/login logo.png')}}"
+                     alt="logo" height="150px" width="200px" >
             </div>
         </div>
     </center>

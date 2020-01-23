@@ -35,6 +35,7 @@ class ReportController extends Controller
         $capsule =[
             'data' =>$data,
             'date' =>$currentDate,
+            'dateTarget'=>$currentDate,
             'collect' =>$dataCollector,
             'selected' => 'A',
             //'edit'=>$editTransaction
@@ -43,6 +44,7 @@ class ReportController extends Controller
         return view('Admin.ReportView.ReportTransaction', compact('capsule'));
     }
     public function printTransaction(Request $request){
+       // dd($request->clone.",". $request->cloneTarget);
         $get = $request->clone;
         $kodeCollect = $request->cloneCollect;
         $data = Transaction::join('customers','transactions.idNasabah',
@@ -53,17 +55,19 @@ class ReportController extends Controller
                 'customers.name as nameCus', 'transactions.tglInput', 'customers.kodeCollector',
                 'employees.name', 'transactions.description')
             ->where('customers.kodeCollector', $kodeCollect)
-            ->where('transactions.tglInput', $get )->get();
+            ->whereBetween('tglInput',[$get, $request->cloneTarget])
+            ->get();
        // dd($data);
         $profile = Koperasi_profile::find(1);
         $capsule =[
             'data' =>$data,
             'date' =>$get,
+            'dateTarget'=>$request->cloneTarget,
             'profile' => $profile,
             'Collector' =>$kodeCollect
         ];
         $pdf = PDF::loadview('Admin.ReportView.TransactionViewReport', ['data'=>$capsule])->setPaper('a4', 'landscape');
-        return $pdf->download("laporan-Transaksi/$get/$kodeCollect.pdf");
+        return $pdf->download("laporan_Transaksi/$get/$kodeCollect.pdf");
         //return view('Admin.ReportView.TransactionViewReport', ['data'=>$capsule]);
 
     }
@@ -76,13 +80,12 @@ class ReportController extends Controller
         $data = Transaction::join('customers','transactions.idNasabah',
             '=', 'customers.idNasabah')
             ->join('employees', 'transactions.idPegawai', '=', 'employees.idPegawai')
-            ->join('log_activities', 'transactions.kodeTransaksi', 'like', 'log_activities.kodeTransaksi', 'left outer')
             ->select('transactions.id', 'transactions.debit', 'transactions.debt',
                 'transactions.transactionType','transactions.kodeTabungan', 'transactions.ppNomor',
                 'customers.name as nameCus', 'transactions.tglInput', 'customers.kodeCollector', 'employees.name', 'transactions.description')
             ->where('customers.kodeCollector', '=', $request->kodeCollector)
-            ->where('transactions.tglInput', $date )
-            ->orderBy('transactions.updated_at', 'DESC')
+            ->whereBetween('tglInput',[$date, $request->tanggalTarget])
+            ->orderBy('transactions.created_at', 'ASC')
             ->orderBy('transactions.tglInput', 'DESC')
             ->get();
         $dataCollector = Employee::all()->where('kodeCollector', '!=', null || "")
@@ -96,6 +99,7 @@ class ReportController extends Controller
         $capsule =[
             'data' =>$data,
             'date' =>$date,
+            'dateTarget'=>$request->tanggalTarget,
             'collect' => $dataCollector,
             'selected' => $request->kodeCollector,
         ];
@@ -152,7 +156,24 @@ class ReportController extends Controller
         ];
         //return $capsule;
         $pdf = PDF::loadview('Admin.ReportView.SavingViewReport', ['capsule'=>$capsule]);
-        return $pdf->stream();
+        return $pdf->download("laporan_simapanan_KC - $codeCollect .pdf");
+    }
+    public function printSavingsNasabah(Request $request){
+        $data = Saving::join('customers',
+            'savings.kodeTabungan', '=', 'customers.kodeTabungan')->where('savings.kodeTabungan', '=', $request->kodeTabungan )->first();
+        //dd($data);
+        $dataTransaksi = Saving::join('transactions', 'savings.kodeTabungan','=', 'transactions.kodeTabungan')
+            ->join('employees', 'transactions.idPegawai', '=', 'employees.idPegawai')
+            ->where('savings.kodeTabungan', '=', $request->kodeTabungan)
+            ->where('transactions.description', '=', null)->get();
+        $capsule = [
+            'user' => $data,
+            'transaction' =>$dataTransaksi,
+        ];
+        //return $capsule;
+        $pdf = PDF::loadview('Admin.ReportView.SavingNasabahViewReport', ['capsule'=>$capsule]);
+        return $pdf->download("laporan_Tabungan_$request->kodeTabungan .pdf");
+        //return view('Admin.ReportView.SavingNasabahViewReport', ['capsule'=>$capsule]);
     }
     public function convertMouth($value){
         $array = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI',
@@ -168,7 +189,8 @@ class ReportController extends Controller
     }
     public function printLoan(Request $request){
         $data = Loan::join('transactions', 'loans.ppNomor', '=', 'transactions.ppNomor')
-            ->where('loans.ppNomor', '=',$request->ppNomor)->get();
+            ->where('loans.ppNomor', '=',$request->ppNomor)
+            ->where('transactions.created_at', '=',null)->get();
         //dd($data);
         $dataCustomers = Loan::join('customers', 'loans.idNasabah', '=', 'customers.idNasabah')
             ->where('loans.ppNomor', '=',$request->ppNomor)->first();
@@ -176,7 +198,7 @@ class ReportController extends Controller
         $day = substr($dataSaldo->tglPinjam, 8);
         $deleteYear = substr($dataSaldo->tglPinjam, 5);
         $mouth = substr($deleteYear, 0, 2);
-        $year = substr($dataSaldo->tglPinjam, 0, 4);
+        $year = substr($dataSaldo->tglPinjam, 2, 2);
         //return $day;
         $conMounth = $this->convertMouth($mouth);
         $tmpPPnomor = $data->first()->ppNomor;
@@ -191,7 +213,7 @@ class ReportController extends Controller
         ];
         //dd($capsule);
         $pdf = PDF::loadView('Admin.ReportView.LoanViewReport', compact('capsule'));
-        return $pdf->download("laporan-pinjaman $dataCustomers->name $dataSaldo->tglPinjam.pdf");
+        return $pdf->download("laporan_pinjaman $dataCustomers->name $dataSaldo->tglPinjam.pdf");
         //return view('Admin.ReportView.LoanViewReport', compact('capsule'));
     }
 

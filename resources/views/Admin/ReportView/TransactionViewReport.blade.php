@@ -44,8 +44,8 @@
         margin-top: 10px;
     }
 </style>
-    <img id="image" src="{{public_path('admin/assets/img/logo.png')}}"
-         alt="logo" height="75px" width="75px">
+    <img id="image" src="{{public_path('admin/assets/img/new logo.png')}}"
+         alt="logo" height="70px" width="75px">
     <div  id="heading">
         <label id="l1"><strong>{{$data['profile']->name}}</strong></label>
         <div class="space"></div>
@@ -57,20 +57,18 @@
         <hr>
             <form class="float-left">
                 <label><strong>Kode Collector : {{$data['Collector']}}</strong></label>
-                <p style="font-family: Times New Roman, sans-serif;">Tanggal Transaksi : Laporan ini merupakan data transaksi simpanan dan tabungan yang dilakukan pegawai pada tanggal
-                    <strong>{{$data['date']}}</strong></p>
+                <p style="font-family: Times New Roman, sans-serif;">Tanggal Transaksi : Laporan ini merupakan data transaksi simpanan dan tabungan yang dilakukan pegawai dari tanggal
+                    <strong>{{$data['date']}}</strong> sampai tanggal <strong>{{$data['dateTarget']}}</strong></p>
             </form>
 
         <table style="margin-top: 30px;" >
             <thead >
             <tr>
-                <th>Tanggal Input</th>
+                <th>Tanggal</th>
                 <th>Nama Nasabah</th>
                 <th>Jenis Transaksi</th>
-                <th>Kode Tabungan</th>
-                <th>Debit</th>
-                <th>PP Nomor</th>
-                <th>Debt</th>
+                <th>Kode</th>
+                <th>Pembayaran</th>
                 <th>Nama Collector</th>
                 <th>Ket</th>
             </tr>
@@ -78,7 +76,7 @@
             <tbody>
             @foreach($data['data'] as $datas)
                 @if($datas->description != null)
-                    <tr style="background-color: #8d9093; font-style: normal;">
+                    <tr style="background-color: #a3a3a3; font-style: normal;">
                 @else
                     <tr>
                 @endif
@@ -89,17 +87,17 @@
                             <th>{{$datas->kodeTabungan}}</th>
                             <th>Rp.{{number_format($datas->debit, 0, "", ",")}}</th>
                         @else
-                            <th></th>
-                            <th></th>
-                        @endif
-
-                        @if($datas->debt != null)
                             <th>{{$datas->ppNomor}}</th>
                             <th>Rp.{{number_format($datas->debt, 0, "", ",")}}</th>
-                        @else
-                            <th></th>
-                            <th></th>
                         @endif
+
+{{--                        @if($datas->debt != null)--}}
+{{--                            <th>{{$datas->ppNomor}}</th>--}}
+{{--                            <th>Rp.{{number_format($datas->debt, 0, "", ",")}}</th>--}}
+{{--                        @else--}}
+{{--                            <th></th>--}}
+{{--                            <th></th>--}}
+{{--                        @endif--}}
                         <th>{{$datas->name}}</th>
                         <th>{{$datas->description}}</th>
                     </tr>

@@ -41,6 +41,7 @@
                                             <th>{{$datas->idPegawai}}</th>
                                             <th>{{$datas->name}}</th>
                                             <th>{{$datas->gender}}</th>
+                                            @if(\Illuminate\Support\Facades\Session::get('idPegawai') == "A0000")
                                             <th>
                                                 <a class="btn btn-primary" href="/admins/{{$datas->idPegawai}}/edit">Edit</a>
                                                 <a class="btn btn-danger" href="#" onclick="
@@ -54,6 +55,9 @@
                                                     @csrf
                                                 </form>
                                             </th>
+                                            @else
+                                                <th>Akses Tidak Diperkenankan</th>
+                                            @endif
                                         </tr>
                                     @endforeach
                                     </tbody>

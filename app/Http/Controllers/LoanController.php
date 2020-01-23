@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Customer;
 use App\Loan;
+use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 
 class LoanController extends Controller
@@ -36,10 +38,8 @@ class LoanController extends Controller
     {
         $Check = DB::table('customers')->where('idNasabah', $request->idNasabah)->first();
         //return $Check->ppNomor;
-            if (($Check->ppNomor != null)) {
-                Session::flash('error', 'Nasabah ini masih memiliki pinjaman yang sedang BERJALAN');
-                return redirect()->intended('/loan');
-            }else{
+            if (($Check->ppNomor == '-')||($Check->ppNomor == null)) {
+
                 $this->validate($request, [
                     'idNasabah' => 'required',
                     'saldoPinjaman' => 'required',
@@ -69,10 +69,10 @@ class LoanController extends Controller
                         'sisaSaldo'=>$request->saldoPinjaman,
                         'idPegawai' => $dataNasabah->idPegawai,
                         'jmlAngsur' => 10,
-                        'pokokPinjamaan' =>$pokokPinjaman,
+                        'pokokPinjaman' =>$pokokPinjaman,
                         'bunga' => $bunga,
                         'idNasabah' =>$request->idNasabah
-                ]);
+                    ]);
                     $updateCustomer = DB::table('customers')->where('idNasabah', $request->idNasabah);
                     $updateCustomer->update([
                         'ppNomor' =>$ppNomor
@@ -83,6 +83,9 @@ class LoanController extends Controller
                     Session::flash('error', "$e");
                     return redirect()->intended('/loan');
                 }
+            }else{
+                Session::flash('error', 'Nasabah ini masih memiliki pinjaman yang sedang BERJALAN');
+                return redirect()->intended('/loan');
             }
     }
 
@@ -155,11 +158,16 @@ class LoanController extends Controller
             'ppNomor'=>null
         ]);
         $data->delete();
-//        $getUser = DB::table('customers')
-//            ->where('ppNomor', '=', $dataUser);
-//        $getUser->update([
-//            'ppNomor' => null
+        $getUser = DB::table('customers')
+            ->where('ppNomor', '=', $dataUser);
+        $getUser->update([
+            'ppNomor' => null
+        ]);
+//        $setTrans = Transaction::where('ppNomor', '=', $dataUser);
+//        $setTrans->update([
+//            'created_at'=>Carbon::now()
 //        ]);
+        DB::delete("DELETE FROM transactions WHERE ppNomor = '$dataUser'");
         Session::flash('success', 'Penambahan pinjaman berhasil');
         return redirect()->intended('/loan');
     }

@@ -52,12 +52,27 @@
                                         </div>
                                     @else
                                         <div class="form-group">
-                                            <label>Debt</label>
-                                            <input type="text" class="form-control @error('debt')
-                                                is-invalid @enderror" name="debt" value="{{$datas->debt}}">
-                                            @error('debt')
+                                            <label>Nominal Pembayaran Sebelumnya</label>
+                                            <label>{{$status}}</label>
+                                            <input type="text" class="form-control @error('debit')
+                                                is-invalid @enderror" name="debit" disabled value="Rp. {{number_format($datas->debt, 0, "", ",")}}">
+                                            @error('debit')
                                             <div class="alert alert-danger">{{$message}}</div>
                                             @enderror
+                                        </div>
+                                        <div class="form-group" >
+                                            <label>Pilih Jenis Perubahan Pembayaran : </label>
+                                            <input type="hidden" id="lStatus" value="{{$status}}">
+                                            <div>
+                                                <label class="radio-inline">
+                                                    <input type="radio" id="radio01" value="biasa"
+                                                           name="radioPay">Pembayaran Biasa
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" id="radio02" value="lunas"
+                                                           name="radioPay">Pembayaran Lunas
+                                                </label>
+                                            </div>
                                         </div>
                                     @endif
                                     <div class="form-group">
@@ -78,4 +93,22 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getGender();
+            //alert("Settings page was loaded");
+        });
+        function getGender(){
+            var status = document.getElementById("lStatus").value;
+            //document.getElementById('radio02').checked = true;
+            if (status =="LUNAS"){
+                document.getElementById("radio01").checked = false;
+                document.getElementById("radio02").checked = true;
+            }else if (status == "BERJALAN"){
+                document.getElementById("radio01").checked = true;
+                document.getElementById("radio02").checked = false;
+            }
+        }
+    </script>
 @endsection

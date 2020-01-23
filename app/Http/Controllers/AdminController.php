@@ -6,6 +6,7 @@ use App\Admin;
 use App\Customer;
 use App\Employee;
 use App\Loan;
+use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -143,19 +144,38 @@ class AdminController extends Controller
         $this->validate($request, [
             'name'=> 'string|required|max:50',
             'radioGender' => 'required',
-            'password' => 'string|required|max:8'
         ]);
         $data = DB::table('employees')->where("idPegawai", $admin);
-        try {
-            $data->update([
-                'name' => $request->name,
-                'password' => $request->password,
-                'gender' => $request->radioGender,
+        //dd($request->newPass);
+        if ($request->newPass != null){
+            $this->validate($request,[
+                'newPass' => 'min:8'
             ]);
-            return redirect()->intended('/admins');
-        }catch (\Exception $e){
-            Session::flash('error', $e);
-            return redirect()->intended('/admins');
+            $hashPass = Hash::make($request->input('newPass'));
+            try {
+                $data->update([
+                    'name' => $request->name,
+                    'gender' => $request->radioGender,
+                    'password' => $hashPass
+                ]);
+                Session::flash('success', 'Penambahan data berhasil');
+                return redirect()->intended('/admins');
+            }catch (\Exception $e){
+                Session::flash('error', $e);
+                return redirect()->intended('/admins');
+            }
+        }else {
+            try {
+                $data->update([
+                    'name' => $request->name,
+                    'gender' => $request->radioGender,
+                ]);
+                Session::flash('success', 'Penambahan data berhasil');
+                return redirect()->intended('/admins');
+            } catch (\Exception $e) {
+                Session::flash('error', $e);
+                return redirect()->intended('/admins');
+            }
         }
     }
 
@@ -168,8 +188,14 @@ class AdminController extends Controller
     public function destroy($admin)
     {
         try {
-            Session::flash('success', 'Penghapusan data berhasil');
+            $data = Transaction::where('idPegawai' ,'=', $admin);
+            if ($data!= null){
+                $data->update([
+                    'idPegawai' => Session::get('idPegawai')
+                ]);
+            }
             DB::delete("DELETE FROM employees WHERE idPegawai = '$admin'");
+            Session::flash('success', 'Penghapusan data berhasil');
         }catch (\Exception $e){
             Session::flash('success', $e);
         }

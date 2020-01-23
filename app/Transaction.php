@@ -14,6 +14,8 @@ class Transaction extends Model
         'idNasabah',
         'debit',
         'debt',
+        'bunga',
+        'jml',
         'tglInput',
         'kodeTabungan',
         'ppNomor',

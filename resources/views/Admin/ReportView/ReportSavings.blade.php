@@ -22,13 +22,12 @@
                         <div class="form-group">
                             <form action="/selectiveCollect" method="get">
                                 <div class="form-group form-inline col-md-8" >
-                                    <label class="form-group form-control">Pilih Area Collector</label>
+                                    <label class="form-group form-control">Pilih Collector</label>
                                     <select id="selector" name="kodeCollector" class="form-group form-control">
                                             @foreach($capsule['collect'] as $data2)
                                                 <option>{{$data2->kodeCollector}}</option>
                                             @endforeach
                                     </select>
-                                </span>
                                     <input  type="submit" value="CARI" class="btn btn-primary">
                                 </div>
                             </form>
@@ -61,6 +60,7 @@
                                             <th>NAMA NASABAH</th>
                                             <th>ALAMAT</th>
                                             <th>SALDO AKHIR</th>
+                                            <th>Cetak Per-Tabungan</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -71,6 +71,12 @@
                                                 <th>{{$datas->name}}</th>
                                                 <th>{{$datas->alamat}}</th>
                                                 <th>Rp. {{number_format($datas->saldo, 0, "", ",")}}</th>
+                                                <th>
+                                                    <form action="/PSavingsNasabah" method="get">
+                                                        <input type="hidden" id="cloneDate" name="kodeTabungan" value="{{$datas->kodeTabungan}}">
+                                                        <input type="submit" class="btn btn-success" value="TABUNGAN NASABAH">
+                                                    </form>
+                                                </th>
                                             </tr>
                                         @endforeach
                                         </tbody>

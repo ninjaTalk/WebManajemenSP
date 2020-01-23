@@ -36,7 +36,7 @@
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="brand">
             <a href="/" style="font-size: 18px; color: #0c1312;">
-                <img src="{{asset('admin/assets/img/logo.png')}}" style="background: #f8f8f8" width="60" height="60" alt="Logo Koperasi" >
+                <img src="{{asset('admin/assets/img/new logo.png')}}" style="background: #f8f8f8" width="60" height="55" alt="Logo Koperasi" >
                 <strong class="text-uppercase">{{\Illuminate\Support\Facades\Session::get('koperasiName')}}</strong>
             </a>
             <!-- Right Side Of Navbar -->

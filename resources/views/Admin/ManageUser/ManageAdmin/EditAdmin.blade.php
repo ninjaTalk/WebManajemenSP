@@ -50,19 +50,20 @@
                                     <div class="form-group">
                                         <label>Kode Collector</label>
                                         <input type="text" class="form-control @error('kodeCollector')
-                                            is-invalid @enderror" name="kodeCollector" value="{{$datas->kodeCollector}}" disabled >
+                                            is-invalid @enderror" disabled name="kodeCollector" value="{{$datas->kodeCollector}}" >
                                         @error('kodeCollector')
                                         <div class="alert alert-danger">{{$message}}</div>
                                         @enderror
                                     </div>
+
                                     <div class="form-group">
-                                        <label>Password</label>
-                                        <input type="text" class="form-control @error('password') is-invalid @enderror"
-                                               name="password" placeholder="Masukkan password" value="{{$datas->password}}">
-                                        @error('password')
+                                        <button onclick="getPass()" class="btn float-right" type="button"><strong>Ganti Password</strong></button>
+                                        @error('newPass')
                                         <div class="alert alert-danger">{{$message}}</div>
                                         @enderror
-                                    </div>
+                                        <input type="hidden" id="LnewPass" name="newPass" placeholder="masukkan password baru"
+                                               class="form-control  ">
+                                   </div>
                                     <button type="submit" class="btn btn-primary">Perbaharui Data</button>
                                 </form>
                             @endforeach
@@ -82,6 +83,7 @@
         function getGender(){
             var gender = document.getElementById("lGender").value;
             //document.getElementById('radio02').checked = true;
+
             if (gender =="Perempuan"){
                 document.getElementById("radio01").checked = false;
                 document.getElementById("radio02").checked = true;
@@ -89,6 +91,10 @@
                 document.getElementById("radio01").checked = true;
                 document.getElementById("radio02").checked = false;
             }
+        }
+        function getPass(){
+            var inputPass = document.getElementById("LnewPass");
+            inputPass.setAttribute('type', 'text');
         }
     </script>
 @endsection

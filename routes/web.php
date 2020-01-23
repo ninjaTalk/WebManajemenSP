@@ -46,6 +46,7 @@ Route::group( ['middleware' => 'auth' ], function()
     Route::get('/RSavings', 'ReportController@indexSaving');
     Route::get('/selectiveCollect', 'ReportController@fitlerCollect');
     Route::get('/PSavings', 'ReportController@printSavings');
+    Route::get('/PSavingsNasabah', 'ReportController@printSavingsNasabah');
 
     //loan Report
     Route::get('/RLoans', 'ReportController@indexLoan');

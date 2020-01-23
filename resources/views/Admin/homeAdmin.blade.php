@@ -6,6 +6,11 @@
             {{ session('status') }}
         </div>
     @endif
+    <style>
+        table th td{
+            text-align: center;
+        }
+    </style>
     <div class="main">
         <div class="main-content">
             <div class="container-fluid">
@@ -51,11 +56,11 @@
                             </form>
                         <div class="card-body">
                             <ul class="list-group pagination col-md-12">
-                                <table id="example" style="margin-top: -20px"
+                                <table id="example" style="margin-top: -20px; text-align: center"
                                        class="table table-striped table-bordered responsive">
                                     <thead class="col-mid-8">
                                     <tr>
-                                        <th>ID</th>
+                                        <th>ID Transaksi</th>
                                         <th>Tanggal Input</th>
                                         <th>Kode Tabungan</th>
                                         <th>PP Nomor</th>
@@ -86,13 +91,13 @@
                                             @else
                                                 <th>Rp.{{number_format($datas->debt, 0, "", ",")}}</th>
                                             @endif
-                                            @if($datas->transactionType == "Pinjaman")
-                                                <th></th>
-                                            @else
+{{--                                            @if($datas->transactionType == "Pinjaman")--}}
+{{--                                                <th></th>--}}
+{{--                                            @else--}}
                                                 <th>
                                                     <a class="btn w-auto btn-primary" href="{{route('transaction.edit', $datas->id)}}">Edit</a>
                                                 </th>
-                                            @endif
+{{--                                            @endif--}}
                                         </tr>
                                     @endforeach
                                     </tbody>

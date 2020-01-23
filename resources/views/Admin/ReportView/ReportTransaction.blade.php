@@ -21,14 +21,17 @@
                     <div class="panel-heading" >
                         <div class="form-group">
                             <form action="/selectiveReport" method="get">
-                                <div class="form-group form-inline col-md-8" >
-                                    <label class="form-group form-control">Pilih Area Collector</label>
+                                <div class="form-group form-inline col-md-11" >
+                                    <label class="form-group form-control">Pilih Collector</label>
                                     <select id="selector" name="kodeCollector" class="form-group form-control">
                                         @foreach($capsule['collect'] as $data2)
                                             <option>{{$data2->kodeCollector}}</option>
                                         @endforeach
                                     </select>
+                                    <label>Dari Tanggal :</label>
                                     <input type="date" style="padding-bottom: 10px" id="myDate" class="form-control" name="tanggal" value="{{$capsule['date']}}">
+                                    <label>Sampai Tanggal :</label>
+                                    <input type="date" style="padding-bottom: 10px" id="myDateTarget" class="form-control" name="tanggalTarget" value="{{$capsule['dateTarget']}}">
                                     <span class="input-group-prepend ml-1">
                                     <input  type="submit" value="CARI" class="btn btn-primary">
                                 </span>
@@ -36,6 +39,7 @@
                             </form>
                             <form action="/PTransaction" method="get">
                                 <input type="hidden" id="cloneDate" name="clone">
+                                <input type="hidden" id="cloneDateTarget" name="cloneTarget">
                                 <input type="hidden" id="cloneCollet" name="cloneCollect" value="{{$capsule['selected']}}">
                                 <input onclick="setClone()" type="submit" class="btn btn-danger" value="CETAK">
                             </form>
@@ -62,12 +66,12 @@
                                         <thead class="col-mid-8">
                                         <tr>
                                             <th>Tanggal Input</th>
-                                            <th>Nama Nasabah</th>
+                                            <th style="width: 200px">Nama Nasabah</th>
                                             <th>Jenis Transaksi</th>
-                                            <th>Kode Tabungan</th>
-                                            <th>Debit</th>
-                                            <th>PP Nomor</th>
-                                            <th>Debt</th>
+                                            <th style="width: 200px">Kode</th>
+                                            <th>Pembayaran</th>
+{{--                                            <th>PP Nomor</th>--}}
+{{--                                            <th>Debt</th>--}}
                                             <th>Nama Collector</th>
                                             <th>Ket</th>
                                         </tr>
@@ -86,21 +90,25 @@
                                                         <th>{{$datas->kodeTabungan}}</th>
                                                         <th>Rp.{{number_format($datas->debit, 0, "", ",")}}</th>
                                                     @else
-                                                        <th></th>
-                                                        <th></th>
-                                                    @endif
-
-                                                    @if($datas->debt != null)
                                                         @if($datas->ppNomor == "-")
                                                             <th>LUNAS</th>
                                                         @else
                                                             <th>{{$datas->ppNomor}}</th>
                                                         @endif
                                                         <th>Rp.{{number_format($datas->debt, 0, "", ",")}}</th>
-                                                    @else
-                                                        <th></th>
-                                                        <th></th>
                                                     @endif
+
+{{--                                                    @if($datas->debt != null)--}}
+{{--                                                        @if($datas->ppNomor == "-")--}}
+{{--                                                            <th>LUNAS</th>--}}
+{{--                                                        @else--}}
+{{--                                                            <th>{{$datas->ppNomor}}</th>--}}
+{{--                                                        @endif--}}
+{{--                                                        <th>Rp.{{number_format($datas->debt, 0, "", ",")}}</th>--}}
+{{--                                                    @else--}}
+{{--                                                        <th></th>--}}
+{{--                                                        <th></th>--}}
+{{--                                                    @endif--}}
                                                     <th>{{$datas->name}}</th>
                                                     <th>{{$datas->description}}</th>
                                                 </tr>
@@ -117,9 +125,8 @@
     </div>
     <script type="text/javascript">
         function setClone() {
-            var date = document.getElementById("myDate").value;
-            //alert(date);
             document.getElementById("cloneDate").defaultValue = document.getElementById("myDate").value + "";
+            document.getElementById("cloneDateTarget").defaultValue = document.getElementById("myDateTarget").value + "";
         }
     </script>
     <script src="jquery-3.4.1.min.js"></script>

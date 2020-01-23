@@ -47,8 +47,8 @@
     }
 </style>
 <center>
-    <img id="image" src="{{public_path('admin/assets/img/logo.png')}}"
-         alt="logo" height="75px" width="75px">
+    <img id="image" src="{{public_path('admin/assets/img/new logo.png')}}"
+         alt="logo" height="70px" width="75px">
     <div  id="heading">
         <label>MENU UTAMA</label>
         <div></div>
@@ -60,7 +60,7 @@
     </div>
     <hr style="margin-top: 20px;">
     <hr>
-
+    <div style="margin-top: 20px;"></div>
     <table>
         <thead>
         <tr>

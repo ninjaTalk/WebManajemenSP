@@ -45,11 +45,10 @@
                                         <th>Name</th>
                                         <th>No KTP</th>
                                         <th class="col-md-1">Tanggal Pinjam</th>
-                                        <th>Saldo</th>
+                                        <th>Saldo Pinjaman</th>
                                         <th>Pokok Pinjaman</th>
+                                        <th>Sisa Saldo</th>
                                         <th>Jenis Bunga</th>
-{{--                                        <th class="col-md-1">Persentase Bunga</th>--}}
-                                        <th class="col-md-1">Jumlah Angsuran</th>
                                         <th>Jaminan</th>
                                         <th>Action</th>
                                     </tr>
@@ -61,17 +60,10 @@
                                             <th>{{$datas->name}}</th>
                                             <th>{{$datas->noKtp}}</th>
                                             <th>{{$datas->tglPinjam}}</th>
-                                            <th>Rp. {{$datas->saldoPinjaman}}</th>
-                                            <th>Rp. {{$datas->pokokPinjaman}}</th>
+                                            <th>Rp.{{number_format($datas->saldoPinjaman, 0, "", ",")}}</th>
+                                            <th>Rp.{{number_format($datas->pokokPinjaman, 0, "", ",")}}</th>
+                                            <th>Rp.{{number_format($datas->sisaSaldo, 0, "", ",")}}</th>
                                             <th>{{$datas->loanType}}</th>
-{{--                                            <th>--}}
-{{--                                                @if($datas->bunga == 0.02)--}}
-{{--                                                    2%--}}
-{{--                                                @else--}}
-{{--                                                    3%--}}
-{{--                                                @endif--}}
-{{--                                            </th>--}}
-                                            <th>{{$datas->jmlAngsur}} Kali</th>
                                             <th>{{$datas->jaminan}}</th>
                                             <th>
                                                 <a class="btn btn-danger" href="#" onclick="

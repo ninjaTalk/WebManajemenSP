@@ -79,8 +79,8 @@
 
     <div id="ReportView">
        <div>
-           <img id="image" src="{{public_path('admin/assets/img/logo.png')}}"
-                alt="logo" height="75px" width="75px">
+           <img id="image" src="{{public_path('admin/assets/img/new logo.png')}}"
+                alt="logo" height="70px" width="75px">
        </div>
         <div id="heading">
             <label id="l1"><strong>KOPERASI CATUR SARI CAHAYA</strong></label>

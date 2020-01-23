@@ -9,8 +9,19 @@ use Illuminate\Support\Facades\DB;
 class Loan extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['ppNomor', 'tglPinjam', 'saldoPinjaman',
-        'loanType', 'jaminan', 'name', 'noKtp', 'status', 'idPegawai','idNasabah',
-        'bunga', 'pokokPinjaman', 'jmlAngsur'];
+    protected $fillable = ['ppNomor',
+        'tglPinjam',
+        'saldoPinjaman',
+        'loanType',
+        'jaminan',
+        'name',
+        'noKtp',
+        'status',
+        'idPegawai',
+        'idNasabah',
+        'bunga',
+        'sisaSaldo',
+        'pokokPinjaman',
+        'jmlAngsur'];
     protected $detes = ['deleted_at'];
 }
