@@ -21,6 +21,9 @@ class ReportController extends Controller
     public function indexTransaction(){
         $currentDate = date("Y-m-d");
         //return $currentDate;
+        $dataCollector = Employee::all()->where('kodeCollector', '!=', null || "")
+            ->sortBy('kodeCollector', SORT_ASC);
+        $selected = $dataCollector->first();
         $data = Transaction::join('customers','transactions.idNasabah',
             '=', 'customers.idNasabah')
             ->join('employees', 'transactions.idPegawai', '=', 'employees.idPegawai')
@@ -28,16 +31,16 @@ class ReportController extends Controller
                 'transactions.transactionType','transactions.kodeTabungan', 'transactions.ppNomor',
                 'customers.name as nameCus', 'transactions.tglInput', 'customers.kodeCollector',
                 'employees.name', 'transactions.description')
-            ->where('customers.kodeCollector', 'A')
+            ->where('customers.kodeCollector', $selected)
             ->where('transactions.tglInput', $currentDate )->get();
-        $dataCollector = Employee::all()->where('kodeCollector', '!=', null || "")
-            ->sortBy('kodeCollector', SORT_ASC);
+
+        //dd($selected->kodeCollector);
         $capsule =[
             'data' =>$data,
             'date' =>$currentDate,
             'dateTarget'=>$currentDate,
             'collect' =>$dataCollector,
-            'selected' => 'A',
+            'selected' => $selected->kodeCollector,
             //'edit'=>$editTransaction
         ];
         //return $currentDate;
@@ -85,8 +88,9 @@ class ReportController extends Controller
                 'customers.name as nameCus', 'transactions.tglInput', 'customers.kodeCollector', 'employees.name', 'transactions.description')
             ->where('customers.kodeCollector', '=', $request->kodeCollector)
             ->whereBetween('tglInput',[$date, $request->tanggalTarget])
-            ->orderBy('transactions.created_at', 'ASC')
             ->orderBy('transactions.tglInput', 'DESC')
+            ->orderBy('transactions.updated_at', 'DESC')
+            ->orderBy('transactions.description', 'ASC')
             ->get();
         $dataCollector = Employee::all()->where('kodeCollector', '!=', null || "")
             ->sortBy('kodeCollector', SORT_ASC);
@@ -106,16 +110,19 @@ class ReportController extends Controller
         return view('Admin.ReportView.ReportTransaction', compact('capsule'));
     }
     public function indexSaving(){
-        $data = Saving::join('customers',
-            'savings.kodeTabungan', '=', 'customers.kodeTabungan')
-            ->where('customers.kodeCollector', '=', 'A')->get();
         $dataCollector = Employee::all()->where('kodeCollector', '!=', null || "")
             ->sortBy('kodeCollector', SORT_ASC);
+        $selected = $dataCollector->first();
+        //dd($selected->kodeCollector);
+        $data = Saving::join('customers',
+            'savings.kodeTabungan', '=', 'customers.kodeTabungan')
+            ->where('customers.kodeCollector', '=', $selected->kodeCollector)->get();
+
         //dd($data);
         $capsule = [
             'data' => $data,
             'collect' =>$dataCollector,
-            'selected' => "A"
+            'selected' => $selected->kodeCOllector
         ];
         //return $capsule;
         return view('Admin.ReportView.ReportSavings', compact('capsule'));
@@ -124,6 +131,7 @@ class ReportController extends Controller
         $codeCollect = $request->kodeCollector;
         $data = Saving::join('customers',
             'savings.kodeTabungan', '=', 'customers.kodeTabungan')
+            ->where('customers.deleted_at', '=', null)
             ->where('customers.kodeCollector', '=', $codeCollect)->get();
         $dataCollector = Employee::all()->where('kodeCollector', '!=', null || "")
             ->sortBy('kodeCollector', SORT_ASC);
@@ -189,6 +197,7 @@ class ReportController extends Controller
     }
     public function printLoan(Request $request){
         $data = Loan::join('transactions', 'loans.ppNomor', '=', 'transactions.ppNomor')
+            ->select('loans.bunga as percent', 'transactions.debt', 'transactions.bunga', 'transactions.jml', 'loans.sisaSaldo')
             ->where('loans.ppNomor', '=',$request->ppNomor)
             ->where('transactions.created_at', '=',null)->get();
         //dd($data);
@@ -210,6 +219,7 @@ class ReportController extends Controller
             'mouth' =>$conMounth,
             'year' => $year,
             'dataLoans' => $dataSaldo,
+            'percent' => $data->first()->percent
         ];
         //dd($capsule);
         $pdf = PDF::loadView('Admin.ReportView.LoanViewReport', compact('capsule'));

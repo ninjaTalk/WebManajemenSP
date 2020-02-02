@@ -20,7 +20,9 @@ class SavingController extends Controller
             ->join('employees', 'employees.idPegawai', '=', 'customers.idPegawai')
 //            ->where('customers.deleted_at', '=', null)
             ->select('employees.name as namePegawai', 'customers.name', 'customers.noKtp',
-                'savings.kodeTabungan', 'savings.saldo', 'savings.tglLastInput', 'savings.created_at')->paginate(6);
+                'savings.kodeTabungan', 'savings.saldo', 'savings.tglLastInput', 'savings.created_at')
+            ->where('customers.deleted_at', '=', null)
+            ->paginate(6);
         return view('Admin.ManageSaving.homeSaving', compact('data'));
     }
 

@@ -27,7 +27,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Nomor KTP</label>
-                                <input type="text" class="form-control @error('noKtp')
+                                <input type="number" class="form-control @error('noKtp')
                                     is-invalid @enderror" placeholder="Masukkan Nomor KTP Nasabah"
                                        name="noKtp">
                                 @error('noKtp')
@@ -64,7 +64,7 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label>password</label>
+                                <label>Password</label>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror"
                                        name="password" placeholder="Masukkan password">
                                 @error('password')

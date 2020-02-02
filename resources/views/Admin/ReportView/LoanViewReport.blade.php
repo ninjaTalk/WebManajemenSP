@@ -113,7 +113,11 @@
                     {{--            <th>Bulan</th>--}}
                     <th style="width: 80px">Tanggal</th>
                     <th style="width: 100px">Pokok</th>
-                    <th style="width: 80px">Bunga 3%</th>
+                    @if($capsule['percent'] <0.03)
+                        <th style="width: 80px">Bunga 2%</th>
+                    @else
+                        <th style="width: 80px">Bunga 3%</th>
+                    @endif
                     <th style="width: 100px">Jumlah</th>
                     <th style="width: 100px">Saldo Pinjaman</th>
                     <th>Paraf</th>

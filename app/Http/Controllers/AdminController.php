@@ -147,6 +147,7 @@ class AdminController extends Controller
         ]);
         $data = DB::table('employees')->where("idPegawai", $admin);
         //dd($request->newPass);
+        //check input pass is null
         if ($request->newPass != null){
             $this->validate($request,[
                 'newPass' => 'min:8'
@@ -164,11 +165,15 @@ class AdminController extends Controller
                 Session::flash('error', $e);
                 return redirect()->intended('/admins');
             }
+         //update new pass
         }else {
             try {
                 $data->update([
                     'name' => $request->name,
                     'gender' => $request->radioGender,
+                ]);
+                Session::put([
+                    'name'=>$request->name,
                 ]);
                 Session::flash('success', 'Penambahan data berhasil');
                 return redirect()->intended('/admins');
@@ -188,6 +193,7 @@ class AdminController extends Controller
     public function destroy($admin)
     {
         try {
+            //set all edit by admin to master admin
             $data = Transaction::where('idPegawai' ,'=', $admin);
             if ($data!= null){
                 $data->update([

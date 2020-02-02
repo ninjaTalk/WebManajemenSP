@@ -20,6 +20,13 @@ class Employee extends Model
             $code = 'A';
             $countDataonTable = Employee::count();
             $code .= str_pad($countDataonTable, 4, 0, STR_PAD_LEFT );
+            $check = Employee::where('idPegawai', '=', $code)->first();
+            if ($check!=null){
+                $getId = Employee::orderBy('created_at', 'desc')->first();
+                $getNumber = substr($getId->idPegawai, 1);
+                //dd($getNumber);
+                $code = "A". str_pad($getNumber +1, 4, 0, STR_PAD_LEFT );
+            }
             $item->idPegawai = $code;
         });
     }

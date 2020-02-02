@@ -29,7 +29,7 @@ class TransactionController extends Controller
                 'transactions.debit', 'transactions.debt', 'transactions.kodeTransaksi')
             ->where('transactions.description' ,'=', null)
             ->where('transactions.created_at' ,'=', null)
-            ->orderByDesc('transactions.tglInput')
+            ->orderByDesc('transactions.id')
             ->paginate(6);
         return view('Admin.homeAdmin', compact('data'));
     }
@@ -95,7 +95,16 @@ class TransactionController extends Controller
         if ($datas->transactionType == "Pinjaman") {
             $loanData = Loan::where('ppNomor', '=', $datas->ppNomor)->first();
             $getStatus = $loanData->status;
-            return view('Admin.ManageTransaction.EditTransaction', ['data'=>$data, 'status'=>$getStatus]);
+            if ($loanData->bunga <0.03){
+                $bunga = $loanData->saldoPinjaman * 0.02;
+                $pokok = $loanData->pokokPinjaman;
+                $result = $pokok + $bunga;
+            }else{
+                $bunga = $loanData->sisaSaldo * 0.03;
+                $pokok = $loanData->pokokPinjaman;
+                $result = $pokok + $bunga;
+            }
+            return view('Admin.ManageTransaction.EditTransaction', ['data'=>$data, 'status'=>$getStatus, "result" =>$result]);
         }
         return view('Admin.ManageTransaction.EditTransaction', compact('data'));
     }
@@ -148,7 +157,7 @@ class TransactionController extends Controller
         //dd($request->getTgl);
         if ($request->transactionType == "Tabungan"){
             $this->validate($request, [
-                'debit'=>'required',
+                'debit'=>'required|numeric',
                 'description'=>'required|max:200']);
             //get saldo in saving
                 $getSaldo = Saving::where('kodeTabungan', $request->kodeTabungan)->first();
@@ -158,6 +167,10 @@ class TransactionController extends Controller
                 $nowDebit = $recordActivities->debit;
                 //minus saldo so the number of saldo will become before enter or input savings
                 $minusSaldo = $getSaldo->saldo - $nowDebit;
+                $saldoTransaction = $minusSaldo + $request->debit;
+                 $countDebit = $minusSaldo + $request->debit;
+                 //update main transaction
+
                 //update transaction
                 $kodeTransaksi = $this->editTKode($recordActivities->idNasabah, $request->getTgl, $request->kodeTabungan);
                 try {
@@ -167,23 +180,27 @@ class TransactionController extends Controller
                         'idPegawai' => $id,
                         'idNasabah' => $recordActivities->idNasabah,
                         'kodeTabungan' => $request->kodeTabungan,
+                        'saldoTabungan' => $countDebit,
                         'transactionType' => 'Tabungan',
                         'description' => "Perubahan Karena : $request->description. Debit dari Rp. $recordActivities->debit menjadi Rp. $request->debit",
                         'debit' =>$recordActivities->debit,
                     ]);
                 }catch (\Exception $e){
+                   // dd($countDebit);
                     $setEdit = Transaction::where('kodeTransaksi', '=',$kodeTransaksi);
                     $setEdit->update([
                         'idPegawai' =>$id,
                         'description' => "Perubahan Karena : $request->description. Debit dari Rp. $recordActivities->debit menjadi Rp. $request->debit",
                         'debit' => $recordActivities->debit,
+                        'saldoTabungan' => $countDebit,
                     ]);
                 }
                 $recordActivities->update([
                     'debit' => $request->debit,
+                    'saldoTabungan' => $countDebit
                 ]);
                 $setSaving = DB::table('savings')->where('kodeTabungan',"=", $request->kodeTabungan);
-                $countDebit = $minusSaldo + $request->debit;
+
                 //dd($countDebit);
                 $setSaving->update([
                     'saldo' => $countDebit
@@ -192,7 +209,8 @@ class TransactionController extends Controller
         }
         else if ($request->transactionType == "Pinjaman"){
             $this->validate($request, [
-                'description' =>'required|max:200'
+                'description' =>'required|max:200',
+                'debt => numeric'
             ]);
             $data = Transaction::where('id','=', $transaction)->get();
             $datas = $data->first();
@@ -222,9 +240,23 @@ class TransactionController extends Controller
                 $lunasBunga = $bunga;
                 $lunasJml = $saldoBeforeEdit + $bunga;
             }
+            if ($request->ModifiedPay!=null){
+                $this->validate($request, ['ModifiedPay'=>'numeric']);
+                $getPokok = $request->ModifiedPay;
+                if ($getPokok <$bunga){
+                    Session::flash('error', 'Nilai nomninal dibawah standar pembayaran');
+                    return redirect()->intended('/home');
+                }
+            }
             $sisaSaldoBiasa = $saldoBeforeEdit - $getPokok;
             $sisaLunas = $saldoBeforeEdit - $saldoBeforeEdit;
             if ($request->radioPay == "biasa"){
+                $check =  Customer::where('idNasabah', '=', $datas->idNasabah)->first();
+                //dd($datas->ppNomor ." , ". $check->ppNomor);
+                if ($datas->ppNomor != $check->ppNomor && $check->ppNomor != null){
+                    Session::flash('error', 'Perubahan data lunas tidak bisa dilakukan, nasabah masih memiliki pinjaman yang sedang berjalan sekarang. Pastikan nasabah tidak memiliki pinjaman jika ingin mengubah data transaksi dari lunas menjadi berjalan');
+                    return redirect()->intended('/home');
+                }
                 $this->editTransaction(
                     $bunga,$jml,
                     $sisaSaldoBiasa,

@@ -51,7 +51,7 @@ class CustomerController extends Controller
 //        try {
             $this->validate($request, [
                 'name' => 'required|max:50',
-                'noKtp' => 'required|unique:customers|min:16',
+                'noKtp' => 'required|unique:customers|min:16|numeric',
                 'alamat' => 'required|max:50',
                 'password' => 'required|min:8|max:8',
             ]);
@@ -77,7 +77,7 @@ class CustomerController extends Controller
                 'idPegawai' => $request->idPegawai,
                 'kodeCollector' => $users->kodeCollector,
                 'kodeTabungan' => "$kodeTabungan",
-                'ppNomor' => "-",
+                'ppNomor' => null,
                 'qrcode'=> $qr
             ]);
             $getID = DB::table('customers')->orderBy('created_at', 'desc')->first();
@@ -94,6 +94,7 @@ class CustomerController extends Controller
 //        }
         return redirect()->intended('/customer');
     }
+    //auto generate QR Code
     public function makeQR($id, $noKtp){
         $file = public_path("\QR_Image\qr_$id.png");
         return \QRCode::text($noKtp)->setOutfile($file)-> png();
@@ -161,16 +162,19 @@ class CustomerController extends Controller
         try {
             $dataUser =  DB::table('customers')->where('idNasabah', '=', $customer);
             $dataUser->update([
+				'password'=>null,
                 'deleted_at'=> Carbon::now(),
-                'noKtp' =>null
+                'noKtp' =>null,
                 ]);
 
+            //delete QR COde
             $userGet = $dataUser->first();
             //dd($userGet->qrcode);
             $QR_path = public_path("\QR_Image\qr_$userGet->idNasabah.png");
             if (File::exists($QR_path)){
                 File::delete($QR_path);
             }
+            //delete saving
             $dataSaving = DB::table('savings')->where('kodeTabungan', '=', $userGet->kodeTabungan);
             $dataSaving->update(['deleted_at'=>Carbon::now()]);
             if (($userGet->ppNomor!=null)||($userGet->ppNomor!='-')){

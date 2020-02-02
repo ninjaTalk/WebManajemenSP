@@ -36,11 +36,11 @@ class EmployeeController extends Controller
     public function changeCollector(Request $request){
         $dataUser = DB::table('customers')->where('kodeCollector', '=', $request->kodeCollector);
         $dataEmployee = DB::table('employees')->where('idPegawai', '=', $request->idPegawai)->first();
-        $dataUser->update([
-            'kodeCollector' =>$dataEmployee->kodeCollector,
-            'idPegawai' =>$request->idPegawai
-        ]);
-        return redirect()->intended('/customer');
+            $dataUser->update([
+                'kodeCollector' => $dataEmployee->kodeCollector,
+                'idPegawai' => $request->idPegawai
+            ]);
+        return redirect()->intended('/employee');
     }
 
     /**
@@ -59,7 +59,7 @@ class EmployeeController extends Controller
                     'kodeCollector' => 'required|unique:employees|max:1'
                 ]
             );
-            try {
+           // try {
                 Employee::create([
                     'name' => $request->name,
                     'isAdmin' => "0",
@@ -69,10 +69,10 @@ class EmployeeController extends Controller
                 ]);
                 Session::flash('success', 'Penambahan data berhasil');
                 return redirect()->intended('/employee');
-            }catch (\Exception $e){
-                Session::flash('error', $e);
-                return redirect()->intended('/employee');
-            }
+//            }catch (\Exception $e){
+//                Session::flash('error', $e);
+//                return redirect()->intended('/employee');
+//            }
     }
 
     /**
@@ -152,6 +152,6 @@ class EmployeeController extends Controller
 //        }catch (\Exception $e){
 //            Session::flash('error', $e);
 //        }
-        return redirect()->intended('/employee');
+
     }
 }

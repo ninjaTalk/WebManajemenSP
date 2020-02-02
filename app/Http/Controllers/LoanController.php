@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Employee;
 use App\Loan;
 use App\Transaction;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class LoanController extends Controller
 
     public function create()
     {
-        $data = Customer::all();
+        $data = Customer::all()->where("ppNomor", '=', null);
         return view('Admin.ManageLoan.AddLoan', compact('data'));
     }
 
@@ -42,7 +43,7 @@ class LoanController extends Controller
 
                 $this->validate($request, [
                     'idNasabah' => 'required',
-                    'saldoPinjaman' => 'required',
+                    'saldoPinjaman' => 'required|numeric',
                     'loanType' => 'required',
                     'tglPinjam' => 'required',
                     'jaminan' => 'required',
@@ -50,7 +51,9 @@ class LoanController extends Controller
                 $deleteYears = substr($request->tglPinjam, 5);
                 $getMouth = substr($deleteYears, 0, 2);
                 $getYears = substr($request->tglPinjam, 0, 4);
-                $ppNomor = $request->idNasabah . '/' . $this->convertMounth($getMouth) . '/' . $getYears . '/KCSC';
+                $getLastId = Loan::all()->sortByDesc('id')->first();
+               // dd($getLastId->id);
+                $ppNomor = $Check->kodeCollector .". ".($getLastId->id + 1 )."/".$request->idNasabah . '/' . $this->convertMounth($getMouth) . '/KCSC'. '/' . $getYears;
                 $dataNasabah = DB::table('customers')
                     ->where('idNasabah', $request->idNasabah)->first();
                 //return $dataNasabah->noKtp;
