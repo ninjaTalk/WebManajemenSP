@@ -20,6 +20,7 @@ class RegisterController extends BaseController
         Register Api
      */
 
+
     public function register(Request $request){
         $validator = Validator::make($request->all(),[
            'name' => 'required',
@@ -37,8 +38,8 @@ class RegisterController extends BaseController
         $user = User::create($input);
         $success['token'] = $user->createToken('MyApp')->accessToken;
         $success['name'] = $user->name;
-        return $success->json($success, 200);
-      //  return $this->sendResponse($success, 'User Register successfully');
+        //return $success->json($success, 200);
+        return $this->sendResponse($success, 'User Register successfully');
     }
 
     /**
