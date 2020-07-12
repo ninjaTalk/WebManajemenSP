@@ -32,25 +32,30 @@
                                     {{session()->get('error')}}
                                 </div>
                             @endif
-                            <a href="/loan/create" class="btn btn-primary">Tambah Pinjaman Baru</a>
-                            <a href="/lunas" class="btn btn-info">Pinjaman LUNAS</a>
-                            <a href="/loan" class="btn btn-info">Pinjaman BERJALAN</a>
+                         <table class="col-md-12">
+                             <tr>
+                                 <th style="margin-left: 0;padding-left: 0" class="col-md-"><a href="/loan/create" class="btn btn-primary ">Tambah Pinjaman Baru</a></th>
+                                 <th class="col-md-1" style="margin-right: 0;padding-right: 0"><a href="/lunas" class="btn btn-info">Pinjaman LUNAS</a></th>
+                                 <th style="margin-right: 0;padding-right: 0" class="col-md-1"><a href="/loan" class="btn btn-info">Pinjaman BERJALAN</a></th>
+                                 <th  class="col-md-1"><a href="/loanApprove" class="btn btn-info">Pengesahan Pinjaman</a></th>
+                             </tr>
+                         </table>
                         <div class="card-body">
                             <ul class="list-group pagination">
                                 <table id="coba"
-                                       class="table table-striped table-bordered" style="font-size: 14px;">
-                                    <thead class="col-mid-8" >
+                                       class="table table-striped table-bordered" style="font-size: 13px;">
+                                    <thead class="col-mid-10" >
                                     <tr >
                                         <th >PP Nomor</th>
                                         <th>Name</th>
                                         <th>No KTP</th>
-                                        <th class="col-md-1">Tanggal Pinjam</th>
+                                        <th width="130px">Tanggal Pinjam</th>
                                         <th>Saldo Pinjaman</th>
                                         <th>Pokok Pinjaman</th>
                                         <th>Sisa Saldo</th>
                                         <th>Jenis Bunga</th>
                                         <th>Jaminan</th>
-                                        <th>Action</th>
+{{--                                        <th>Action</th>--}}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -65,18 +70,18 @@
                                             <th>Rp.{{number_format($datas->sisaSaldo, 0, "", ",")}}</th>
                                             <th>{{$datas->loanType}}</th>
                                             <th>{{$datas->jaminan}}</th>
-                                            <th>
-                                                <a class="btn btn-danger" href="#" onclick="
-                                                    if (window.confirm('Apakah anda yakin ingin menghapus data ini ? ')){
-                                                    $('#formDelete{{$datas->id}}').submit()
-                                                    }
-                                                    ">Hapus</a>
-                                                <form action="{{route('loan.destroy', $datas->id)}}"
-                                                      id="formDelete{{$datas->id}}" method="POST">
-                                                    @method('delete')
-                                                    @csrf
-                                                </form>
-                                            </th>
+{{--                                            <th>--}}
+{{--                                                <a class="btn btn-danger" href="#" onclick="--}}
+{{--                                                    if (window.confirm('Apakah anda yakin ingin menghapus data ini ? ')){--}}
+{{--                                                    $('#formDelete{{$datas->id}}').submit()--}}
+{{--                                                    }--}}
+{{--                                                    ">Hapus</a>--}}
+{{--                                                <form action="{{route('loan.destroy', $datas->id)}}"--}}
+{{--                                                      id="formDelete{{$datas->id}}" method="POST">--}}
+{{--                                                    @method('delete')--}}
+{{--                                                    @csrf--}}
+{{--                                                </form>--}}
+{{--                                            </th>--}}
                                         </tr>
                                     @endforeach
                                     </tbody>

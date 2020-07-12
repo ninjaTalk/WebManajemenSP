@@ -100,6 +100,8 @@ class ReportController extends Controller
 //                'employees.name', 'transactions.transactionType', 'transactions.ppNomor', 'transactions.kodeTabungan')
 //            ->where('log_activities.created_at', '=', $date)->get();
 //        dd($data);
+
+        //test
         $capsule =[
             'data' =>$data,
             'date' =>$date,
@@ -122,7 +124,7 @@ class ReportController extends Controller
         $capsule = [
             'data' => $data,
             'collect' =>$dataCollector,
-            'selected' => $selected->kodeCOllector
+            'selected' => $selected->kodeCollector,
         ];
         //return $capsule;
         return view('Admin.ReportView.ReportSavings', compact('capsule'));
@@ -197,17 +199,19 @@ class ReportController extends Controller
     }
     public function printLoan(Request $request){
         $data = Loan::join('transactions', 'loans.ppNomor', '=', 'transactions.ppNomor')
-            ->select('loans.bunga as percent', 'transactions.debt', 'transactions.bunga', 'transactions.jml', 'loans.sisaSaldo')
+            ->select('loans.bunga as percent', 'transactions.debt', 'transactions.bunga', 'transactions.jml',
+                'transactions.sisaSaldo', 'transactions.tglInput', 'loans.ppNomor')
             ->where('loans.ppNomor', '=',$request->ppNomor)
             ->where('transactions.created_at', '=',null)->get();
-        //dd($data);
+       // dd($data);
         $dataCustomers = Loan::join('customers', 'loans.idNasabah', '=', 'customers.idNasabah')
             ->where('loans.ppNomor', '=',$request->ppNomor)->first();
         $dataSaldo = Loan::all()->where('ppNomor', '=',$request->ppNomor)->first();
         $day = substr($dataSaldo->tglPinjam, 8);
         $deleteYear = substr($dataSaldo->tglPinjam, 5);
         $mouth = substr($deleteYear, 0, 2);
-        $year = substr($dataSaldo->tglPinjam, 2, 2);
+        $year = substr($dataSaldo->tglPinjam, 0, 4);
+        //dd($year);
         //return $day;
         $conMounth = $this->convertMouth($mouth);
         $tmpPPnomor = $data->first()->ppNomor;

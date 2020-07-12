@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Data Pinjaman Lunas')
+@section('title', 'Data Pinjaman')
 
 @section('content')
     <div class="main">
@@ -9,15 +9,15 @@
                     <div class="panel-body" style="background-color: #5fb95f;
                     padding: 0 0 0 0; margin-bottom: 10px;">
                         <div class="col-md-1" style="margin-right: 10px; background-color: white">
-                            <img  src="{{asset('admin/assets/img/paid2.png')}}"
+                            <img  src="{{asset('admin/assets/img/contract.png')}}"
                                   width="80" height="80" alt="Icon_pinjaman" >
                         </div>
                         <div class="col-md-6 mr-3 float-right" style="color: white">
                             <h3>
-                                <strong>Data Lunas</strong>
+                                <strong>Pengesahan Pinjaman</strong>
                             </h3>
                             <h5 style="margin-top: -5px;margin-left: 10px">
-                                Halaman ini menampilkan data pinajaman nasabah yang telah lunas
+                                Halaman ini menampilkan data pinajaman yang masih belum disetujui
                             </h5>
                         </div>
                     </div>
@@ -32,6 +32,7 @@
                                 {{session()->get('error')}}
                             </div>
                         @endif
+
                             <table class="col-md-12">
                                 <tr>
                                     <th style="margin-left: 0;padding-left: 0" class="col-md-"><a href="/loan/create" class="btn btn-primary ">Tambah Pinjaman Baru</a></th>
@@ -40,37 +41,17 @@
                                     <th  class="col-md-1"><a href="/loanApprove" class="btn btn-info">Pengesahan Pinjaman</a></th>
                                 </tr>
                             </table>
-                         <div class="card-body">
-                            <ul class="list-group pagination">
-                                <table id="coba"
-                                       class="table table-striped table-bordered">
-                                    <thead class="col-mid-8">
-                                    <tr>
-                                        <th>PP Nomor</th>
-                                        <th>Name</th>
-                                        <th>No KTP</th>
-                                        <th>Tanggal Pinjam</th>
-                                        <th>Tanggal Berakhir</th>
-                                        <th>Jenis Bunga</th>
-                                        <th>Jaminan</th>
-                                        <th>Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($data as $datas)
-                                        <tr>
-                                            <th>{{$datas->ppNomor}}</th>
-                                            <th>{{$datas->name}}</th>
-                                            <th>{{$datas->noKtp}}</th>
-                                            <th>{{$datas->tglPinjam}}</th>
-                                            <th>{{$datas->tglLastInput}}</th>
-                                            <th>{{$datas->loanType}}</th>
-                                            <th>{{$datas->jaminan}}</th>
-                                            <th>{{$datas->status}}</th>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+
+                        <div class="card-body">
+                            <div style="margin-top: 50px"></div>
+                            <ul class="list-group">
+                                @foreach($data as $datas)
+                                    <a href="/loan/{{$datas->id}}/edit">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span class="mr-2">{{$datas->name}} | {{$datas->ppNomor}} | {{$datas->saldoPinjaman}}</span>
+                                        </li>
+                                    </a>
+                                @endforeach
                             </ul>
                         </div>
                     </div>

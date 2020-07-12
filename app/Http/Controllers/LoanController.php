@@ -21,12 +21,17 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $data = Loan::all()->where('status', '=', 'BERJALAN')->sortBy('tglPinjam', SORT_ASC );
+        $data = Loan::all()->where('status', '=', 'BERJALAN')->sortByDesc('created_at');
         return view('Admin.ManageLoan.homeLoan', ['data'=>$data]);
     }
     public function indexLunas(){
         $data = Loan::all()->where('status', '=', 'LUNAS');
         return view('Admin.ManageLoan.HomeLunas', compact('data'));
+    }
+
+    public function indexApprove(){
+        $data = Loan::all()->where('isApprove', '=', 0);
+        return view('Admin.ManageLoan.LoanOnApprove', compact('data'));
     }
 
     public function create()
@@ -68,10 +73,11 @@ class LoanController extends Controller
                         'jaminan' => $request->jaminan,
                         'name' => $dataNasabah->name,
                         'noKtp' => $dataNasabah->noKtp,
-                        'status' => "BERJALAN",
+                        'status' => "APPROVE",
                         'sisaSaldo'=>$request->saldoPinjaman,
                         'idPegawai' => $dataNasabah->idPegawai,
                         'jmlAngsur' => 10,
+                        'isApprove' => 0,
                         'pokokPinjaman' =>$pokokPinjaman,
                         'bunga' => $bunga,
                         'idNasabah' =>$request->idNasabah
@@ -119,7 +125,7 @@ class LoanController extends Controller
      */
     public function show(Loan $loan)
     {
-        //
+
     }
 
     /**
@@ -130,7 +136,7 @@ class LoanController extends Controller
      */
     public function edit(Loan $loan)
     {
-        //
+        return view('Admin.ManageLoan.GiveApprove', compact('loan'));
     }
 
     /**
@@ -142,7 +148,13 @@ class LoanController extends Controller
      */
     public function update(Request $request, Loan $loan)
     {
-        //
+        //dd($loan);
+        $loan->update([
+            'status' => "BERJALAN",
+            'isApprove' => 1
+        ]);
+        Session::flash('success', 'Pengesahan pinjaman berhasil');
+        return redirect()->intended('/loan');
     }
 
     /**
@@ -153,9 +165,24 @@ class LoanController extends Controller
      */
     public function destroy($loan)
     {
-        $data = Loan::find($loan);
-        //dd($data);
         $getPP = DB::table('loans')->where('id', '=',$loan)->first();
+        $dataUser = $getPP->ppNomor;
+        DB::delete("DELETE FROM loans where ppNomor = '$dataUser'");
+        $getUser = DB::table('customers')
+            ->where('ppNomor', '=', $dataUser);
+        $getUser->update([
+            'ppNomor' => null
+        ]);
+        DB::delete("DELETE FROM transactions WHERE ppNomor = '$dataUser'");
+        Session::flash('success', 'Hapus pinjaman berhasil');
+        return redirect()->intended('/loan');
+    }
+    public function rejectLoan($id){
+        //dd("HALLO");
+        //dd($loan);
+        $data = Loan::find($id);
+        //dd($data);
+        $getPP = DB::table('loans')->where('id', '=',$id)->first();
         $dataUser = $getPP->ppNomor;
         $data->update([
             'ppNomor'=>null
@@ -171,7 +198,7 @@ class LoanController extends Controller
 //            'created_at'=>Carbon::now()
 //        ]);
         DB::delete("DELETE FROM transactions WHERE ppNomor = '$dataUser'");
-        Session::flash('success', 'Penambahan pinjaman berhasil');
+        Session::flash('success', 'Penolakan pinjaman berhasil');
         return redirect()->intended('/loan');
     }
 }

@@ -20,6 +20,7 @@ class Transaction extends Model
         'kodeTabungan',
         'ppNomor',
         'sisaSaldo',
+        'edited_by',
         'saldoTabungan'
     ];
 }

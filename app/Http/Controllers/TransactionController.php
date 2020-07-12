@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Employee;
 use App\Loan;
 use App\Log_activity;
 use App\Saving;
@@ -28,7 +29,7 @@ class TransactionController extends Controller
                 'transactions.ppNomor', 'customers.name', 'transactions.transactionType',
                 'transactions.debit', 'transactions.debt', 'transactions.kodeTransaksi')
             ->where('transactions.description' ,'=', null)
-            ->where('transactions.created_at' ,'=', null)
+//            ->where('transactions.created_at' ,'=', null)
             ->orderByDesc('transactions.id')
             ->paginate(6);
         return view('Admin.homeAdmin', compact('data'));
@@ -100,18 +101,23 @@ class TransactionController extends Controller
                 $pokok = $loanData->pokokPinjaman;
                 $result = $pokok + $bunga;
             }else{
-                $bunga = $loanData->sisaSaldo * 0.03;
+                $getResult = $loanData->sisaSaldo + $datas->debt;
+                $bunga = $getResult * 0.03;
                 $pokok = $loanData->pokokPinjaman;
                 $result = $pokok + $bunga;
             }
+            //dd($pokok .", ".$bunga.",".$result);
             return view('Admin.ManageTransaction.EditTransaction', ['data'=>$data, 'status'=>$getStatus, "result" =>$result]);
         }
         return view('Admin.ManageTransaction.EditTransaction', compact('data'));
     }
 
 
-    public function editTKode($idNasabah, $tgl, $data){
-        $kodeTransaksi = "$idNasabah/$tgl/$data/Edited";
+    public function editTKode($kode, $tgl, $idPegawai){
+        $getId = Transaction::all()->sortByDesc('id',SORT_DESC)->first();
+        $updateID = $getId->id+1;
+        $kodeTransaksi = "$kode/$tgl/$idPegawai/$updateID";
+        //dd($kodeTransaksi);
         return $kodeTransaksi;
     }
     public function editTransaction($bunga, $jml,$sisaSaldo, $id, $tgl, $idNasabah, $ppNomor, $debt, $debtAkhir,  $description){
@@ -135,7 +141,7 @@ class TransactionController extends Controller
             $set->update([
                 'sisaSaldo' =>$sisaSaldo,
                 'idPegawai' =>$id,
-                'description' => "Perubahan Karena : $description. Rp. Debt dari $debt menjadi Rp. $debtAkhir",
+                'description' => "Perubahan Karena : $description. Debt dari Rp. $debt menjadi Rp. $debtAkhir",
                 'debt' => $debt,
                 'bunga'=>$bunga,
                 'jml'=>$jml,
@@ -153,13 +159,13 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $transaction)
     {
-        $id = Session::get('idPegawai');
+        $name = Session::get('name');
         //dd($request->getTgl);
         if ($request->transactionType == "Tabungan"){
             $this->validate($request, [
                 'debit'=>'required|numeric',
                 'description'=>'required|max:200']);
-            //get saldo in saving
+                //get saldo in saving
                 $getSaldo = Saving::where('kodeTabungan', $request->kodeTabungan)->first();
                 //get debit in transaction will be edit
                 $recordActivities = Transaction::find($transaction);
@@ -170,34 +176,36 @@ class TransactionController extends Controller
                 $saldoTransaction = $minusSaldo + $request->debit;
                  $countDebit = $minusSaldo + $request->debit;
                  //update main transaction
+                //get data admin
 
                 //update transaction
                 $kodeTransaksi = $this->editTKode($recordActivities->idNasabah, $request->getTgl, $request->kodeTabungan);
                 try {
                     Transaction::create([
-                        'kodeTransaksi' => $this->editTKode($recordActivities->idNasabah, $request->getTgl, $request->kodeTabungan),
+                        'kodeTransaksi' => $this->editTKode($recordActivities->kodeTabungan, $request->getTgl, $recordActivities->idPegawai),
                         'tglInput' => $request->getTgl,
-                        'idPegawai' => $id,
+                        'idPegawai' => $recordActivities->idPegawai,
                         'idNasabah' => $recordActivities->idNasabah,
                         'kodeTabungan' => $request->kodeTabungan,
                         'saldoTabungan' => $countDebit,
                         'transactionType' => 'Tabungan',
-                        'description' => "Perubahan Karena : $request->description. Debit dari Rp. $recordActivities->debit menjadi Rp. $request->debit",
-                        'debit' =>$recordActivities->debit,
+                        'debit' =>$request->debit,
+                        'edited_by' =>$name
                     ]);
                 }catch (\Exception $e){
                    // dd($countDebit);
-                    $setEdit = Transaction::where('kodeTransaksi', '=',$kodeTransaksi);
-                    $setEdit->update([
-                        'idPegawai' =>$id,
-                        'description' => "Perubahan Karena : $request->description. Debit dari Rp. $recordActivities->debit menjadi Rp. $request->debit",
-                        'debit' => $recordActivities->debit,
-                        'saldoTabungan' => $countDebit,
-                    ]);
+//                    $setEdit = Transaction::where('kodeTransaksi', '=',$kodeTransaksi);
+//                    $setEdit->update([
+//                        'idPegawai' =>$id,
+//                        'description' => "Perubahan Karena : $request->description. Debit dari Rp. $recordActivities->debit menjadi Rp. $request->debit",
+//                        'debit' => $recordActivities->debit,
+//                        'saldoTabungan' => $countDebit,
+//                    ]);
                 }
                 $recordActivities->update([
-                    'debit' => $request->debit,
-                    'saldoTabungan' => $countDebit
+                    //'debit' => $request->debit,
+                    //'saldoTabungan' => $countDebit,
+                    'description' => "Perubahan Karena : $request->description. Debit dari Rp. $recordActivities->debit menjadi Rp. $request->debit",
                 ]);
                 $setSaving = DB::table('savings')->where('kodeTabungan',"=", $request->kodeTabungan);
 
@@ -220,6 +228,7 @@ class TransactionController extends Controller
             $saldoBeforeEdit = $getsisa + $datas->debt;
             $getcount = Transaction::where('ppNomor','=', $datas->ppNomor)->where('description', '=', null)->get();
 
+            //calculate price
             if ($loanData->bunga == 0.02){
                 $bunga = $loanData->saldoPinjaman * 0.02;
                 $jml = $getPokok + $bunga;
@@ -240,14 +249,18 @@ class TransactionController extends Controller
                 $lunasBunga = $bunga;
                 $lunasJml = $saldoBeforeEdit + $bunga;
             }
+
+            //check payloan input
             if ($request->ModifiedPay!=null){
                 $this->validate($request, ['ModifiedPay'=>'numeric']);
-                $getPokok = $request->ModifiedPay;
+                $getPokok = $request->ModifiedPay - $bunga;
+                $jml = $request->ModifiedPay;
                 if ($getPokok <$bunga){
                     Session::flash('error', 'Nilai nomninal dibawah standar pembayaran');
                     return redirect()->intended('/home');
                 }
             }
+            //dd($getPokok . "," . $saldoBeforeEdit);
             $sisaSaldoBiasa = $saldoBeforeEdit - $getPokok;
             $sisaLunas = $saldoBeforeEdit - $saldoBeforeEdit;
             if ($request->radioPay == "biasa"){
@@ -257,46 +270,51 @@ class TransactionController extends Controller
                     Session::flash('error', 'Perubahan data lunas tidak bisa dilakukan, nasabah masih memiliki pinjaman yang sedang berjalan sekarang. Pastikan nasabah tidak memiliki pinjaman jika ingin mengubah data transaksi dari lunas menjadi berjalan');
                     return redirect()->intended('/home');
                 }
-                $this->editTransaction(
-                    $bunga,$jml,
-                    $sisaSaldoBiasa,
-                    $id,
-                    $datas->tglInput,
-                    $datas->idNasabah,
-                    $datas->ppNomor,
-                    $datas->debt,
-                    $getPokok,
-                    $request->description
-                );
                 $finaljml = $jml;
                 $finalBunga = $bunga;
                 $debt = $getPokok;
                 $finalSaldo = $sisaSaldoBiasa;
+                Transaction::create([
+                    'kodeTransaksi' => $this->editTKode($datas->ppNomor, $datas->tglInput, $datas->idPegawai),
+                    'idPegawai' => $datas->idPegawai,
+                    'tglInput' =>  $datas->tglInput,
+                    'idNasabah' => $datas->idNasabah,
+                    'ppNomor' =>  $datas->ppNomor,
+                    'transactionType' => 'Pinjaman',
+                    'debt' => $getPokok,
+                    'bunga'=>$finalBunga,
+                    'jml'=>$finaljml,
+                    'sisaSaldo' => $finalSaldo,
+                    'edited_by' =>$name
+                ]);
             }else{
-                $this->editTransaction(
-                    $lunasBunga,
-                    $lunasJml,
-                    $sisaLunas,
-                    $id,
-                    $datas->tglInput,
-                    $datas->idNasabah,
-                    $datas->ppNomor,
-                    $datas->debt,
-                    $saldoBeforeEdit,
-                    $request->description
-                );
                 $finaljml = $lunasJml;
                 $finalBunga = $lunasBunga;
                 $debt = $saldoBeforeEdit;
                 $finalSaldo = $sisaLunas;
+                Transaction::create([
+                    'kodeTransaksi' => $this->editTKode($datas->ppNomor, $datas->tglInput, $datas->idPegawai),
+                    'idPegawai' => $datas->idPegawai,
+                    'tglInput' =>  $datas->tglInput,
+                    'idNasabah' => $datas->idNasabah,
+                    'ppNomor' =>  $datas->ppNomor,
+                    'transactionType' => 'Pinjaman',
+                    'debt' => $debt,
+                    'bunga'=>$finalBunga,
+                    'jml'=>$finaljml,
+                    'sisaSaldo' => $finalSaldo,
+                    'edited_by' =>$name
+                ]);
             }
 
                 $setEdit = Transaction::find($transaction);
                 $setEdit->update([
-                    'debt' => $debt,
-                    'bunga' => $finalBunga,
-                    'jml' =>$finaljml,
-                    'sisaSaldo'=>$finalSaldo
+//                    'debt' => $debt,
+//                    'bunga' => $finalBunga,
+//                    'jml' =>$finaljml,
+//                    'sisaSaldo'=>$finalSaldo
+                    'edited_by' =>$name,
+                    'description' => "Perubahan Karena : $request->description. Debt dari Rp. $datas->debt menjadi Rp. $finaljml",
                 ]);
                 $setLoan = Loan::where('ppNomor', '=', "$request->ppNomor");
                 $setCustomers = Customer::where('idNasabah', '=', $datas->idNasabah);

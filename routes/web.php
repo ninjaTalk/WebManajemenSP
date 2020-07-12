@@ -32,6 +32,8 @@ Route::group( ['middleware' => 'auth' ], function()
     Route::resource('saving', 'SavingController');
     Route::resource('loan', 'LoanController');
     Route::get('/lunas', 'LoanController@indexLunas');
+    Route::get('/loanApprove', 'LoanController@indexApprove');
+    Route::post('/rejectLoan/{id}', 'LoanController@rejectLoan')->name('loan.reject');
     Route::post('/employee/changeCollector', 'EmployeeController@changeCollector');
 
     //Report Route

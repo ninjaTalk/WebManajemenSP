@@ -22,6 +22,7 @@ class Loan extends Model
         'bunga',
         'sisaSaldo',
         'pokokPinjaman',
+        'isApprove',
         'jmlAngsur'];
     protected $detes = ['deleted_at'];
 }
