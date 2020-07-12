@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends BaseController
 {
+
+    use AuthenticatesUsers;
+
     /**
         Register Api
      */
@@ -33,8 +37,8 @@ class RegisterController extends BaseController
         $user = User::create($input);
         $success['token'] = $user->createToken('MyApp')->accessToken;
         $success['name'] = $user->name;
-
-        return $this->sendResponse($success, 'User Register successfully');
+        return $success->json($success, 200);
+      //  return $this->sendResponse($success, 'User Register successfully');
     }
 
     /**
@@ -42,8 +46,9 @@ class RegisterController extends BaseController
      */
 
     public function login(Request $request){
-        if (Auth::attempt(['email'=>$request->email, 'password' =>$request->password])){
-            $user = Auth::user();
+        //Auth::guard('admin')->attempt(['idPegawai' =>$request->input('idPegawai'
+        if (Auth::guard('api')->attempt(['email'=>$request->email, 'password' =>$request->password])){
+            $user = Auth::guard('api')->user();
             $success['token'] = $user->createToken('MyApp')->accessToken;
             $success['name'] = $user->name;
 
